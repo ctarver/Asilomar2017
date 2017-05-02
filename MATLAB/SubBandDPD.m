@@ -114,15 +114,15 @@ classdef SubBandDPD
            dpdBlockIndx    = dpdBlockIndx + 1;
            obj = processBlock(obj,signal,pa,sample,dpdBlockIndx);
          end
-         figure();
-         plot(0:length(obj.DPD_Coeff)-1,real(obj.DPD_Coeff));
-         hold on
-         plot(0:length(obj.DPD_Coeff)-1,imag(obj.DPD_Coeff));
-         
-         figure()
-         plot(real(obj.correlation))
-         hold on
-         plot(imag(obj.correlation))         
+%          figure();
+%          plot(0:length(obj.DPD_Coeff)-1,real(obj.DPD_Coeff));
+%          hold on
+%          plot(0:length(obj.DPD_Coeff)-1,imag(obj.DPD_Coeff));
+%          
+%          figure()
+%          plot(real(obj.correlation))
+%          hold on
+%          plot(imag(obj.correlation))         
    
       end
       function obj = performNewtonDpdLearning(obj,pa,signal)
