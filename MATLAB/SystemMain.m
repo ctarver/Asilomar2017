@@ -13,8 +13,8 @@ myLTE.sampleArray = LTE.normalizeSignal(myLTE.sampleArray);
 
 %% PA
 myPA = PA(9);     %Set up a PA
-myDAC = DAC(10,9);
-myFrontend = Frontend(myPA,myDAC);
+%myDAC = DAC(10,9);
+%myFrontend = Frontend(myPA,myDAC);
 %myPA = WARP(1); %Set up WARP board
 
 % Broadcast double pre signal
@@ -24,11 +24,12 @@ out = broadcast(myPA,myLTE.sampleArray);
 
 
 %normal = LTE.normalizeSignal(out);
-LTE.plot_freqdomain(out,myLTE.CCs.CC1.systemFs,'','Post-PA');
+%LTE.plot_freqdomain(out,myLTE.CCs.CC1.systemFs,'','Post-PA');
 
 %% DPD Processing
 %Set up DPD unit and perform learning
-myDPD = SubBandDPD(myFrontend,myLTE,'IM3+');
+%% Double
+myDPD = SubBandDPD(myPA,myLTE,'IM3+');
 
 %Apply learned DPD to signal
 %signalWithDPD = applyDPDtoSignal(myDPD,myLTE);
@@ -38,44 +39,50 @@ DPDout1 = applyDPDtoSignal(myDPD,myLTE);
 signalWithDPD = broadcast(myPA,DPDout1);
 
 %normal = LTE.normalizeSignal(out);
-LTE.plot_freqdomain(signalWithDPD,myLTE.CCs.CC1.systemFs,'','10 bits');
+LTE.plot_freqdomain(signalWithDPD,myLTE.CCs.CC1.systemFs,'','Double');
 
 
-% myDAC = DAC(8,7);
-% myFrontend = Frontend(myPA,myDAC);
-% myDPD = SubBandDPD(myFrontend,myLTE,'IM3+');
-% DPDout1 = applyDPDtoSignal(myDPD,myLTE);
-% signalWithDPD = broadcast(myPA,DPDout1);
-% LTE.plot_freqdomain(signalWithDPD,myLTE.CCs.CC1.systemFs,'','8 bits');
+%% 8 bits
+ myDAC = DAC(8,7);
+ myFrontend = Frontend(myPA,myDAC);
+ myDPD = SubBandDPD(myFrontend,myLTE,'IM3+');
+ DPDout1 = applyDPDtoSignal(myDPD,myLTE);
+ signalWithDPD = broadcast(myPA,DPDout1);
+ LTE.plot_freqdomain(signalWithDPD,myLTE.CCs.CC1.systemFs,'','8 bits');
+ 
+ %% 6 Bits
+ myDAC = DAC(6,5);
+ myFrontend = Frontend(myPA,myDAC);
+ myDPD = SubBandDPD(myFrontend,myLTE,'IM3+');
+ DPDout1 = applyDPDtoSignal(myDPD,myLTE);
+ signalWithDPD = broadcast(myPA,DPDout1);
+ LTE.plot_freqdomain(signalWithDPD,myLTE.CCs.CC1.systemFs,'','6 bits');
+ 
+ %% 4 bits
+ myDAC = DAC(4,3);
+ myFrontend = Frontend(myPA,myDAC);
+ myDPD = SubBandDPD(myFrontend,myLTE,'IM3+');
+ DPDout1 = applyDPDtoSignal(myDPD,myLTE);
+ signalWithDPD = broadcast(myPA,DPDout1);
+ LTE.plot_freqdomain(signalWithDPD,myLTE.CCs.CC1.systemFs,'','4 bits');
+ 
+ %% 2 bits
+ myDAC = DAC(2,1);
+ myFrontend = Frontend(myPA,myDAC);
+ myDPD = SubBandDPD(myFrontend,myLTE,'IM3+');
+ DPDout1 = applyDPDtoSignal(myDPD,myLTE);
+ signalWithDPD = broadcast(myPA,DPDout1);
+ LTE.plot_freqdomain(signalWithDPD,myLTE.CCs.CC1.systemFs,'','2 bits');
+
 % 
-% myDAC = DAC(6,5);
+% myDAC = DAC(1,0);
 % myFrontend = Frontend(myPA,myDAC);
 % myDPD = SubBandDPD(myFrontend,myLTE,'IM3+');
 % DPDout1 = applyDPDtoSignal(myDPD,myLTE);
 % signalWithDPD = broadcast(myPA,DPDout1);
-% LTE.plot_freqdomain(signalWithDPD,myLTE.CCs.CC1.systemFs,'','6 bits');
-% 
-% myDAC = DAC(4,3);
-% myFrontend = Frontend(myPA,myDAC);
-% myDPD = SubBandDPD(myFrontend,myLTE,'IM3+');
-% DPDout1 = applyDPDtoSignal(myDPD,myLTE);
-% signalWithDPD = broadcast(myPA,DPDout1);
-% LTE.plot_freqdomain(signalWithDPD,myLTE.CCs.CC1.systemFs,'','4 bits');
-% 
-% myDAC = DAC(2,1);
-% myFrontend = Frontend(myPA,myDAC);
-% myDPD = SubBandDPD(myFrontend,myLTE,'IM3+');
-% DPDout1 = applyDPDtoSignal(myDPD,myLTE);
-% signalWithDPD = broadcast(myPA,DPDout1);
-% LTE.plot_freqdomain(signalWithDPD,myLTE.CCs.CC1.systemFs,'','2 bits');
+% LTE.plot_freqdomain(signalWithDPD,myLTE.CCs.CC1.systemFs,'','1 bits');
+LTE.plot_freqdomain(out,myLTE.CCs.CC1.systemFs,'','Post-PA');
 
-
-myDAC = DAC(1,0);
-myFrontend = Frontend(myPA,myDAC);
-myDPD = SubBandDPD(myFrontend,myLTE,'IM3+');
-DPDout1 = applyDPDtoSignal(myDPD,myLTE);
-signalWithDPD = broadcast(myPA,DPDout1);
-LTE.plot_freqdomain(signalWithDPD,myLTE.CCs.CC1.systemFs,'','1 bits');
 legend('show')
 
 end
