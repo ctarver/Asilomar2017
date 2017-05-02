@@ -386,6 +386,7 @@ However, this comes with a considerable computational complexity especially as t
 Moreover, the cost of the ADC rapidly increases as the sampling rate grows.
 
 One potential way to ease this cost and reduce complexity with only a small loss in performance is to reduce the precision of the ADC. We illustrate this in Figure \ref{fullbandpsd}. Here, we have two noncontiguous signals like what may be found in LTE-Advanced carrier aggregation. They are each 5 MHz in bandwidth. They are broadcast through a fifth-order, nonlinear PA model with memory effects implemented in \textsc{Matlab}. Intermodulation occurs occurs and introduces large spurious emissions through the nearby spectrum as seen by the black curve.
+
 When we perform the DPD algorithm where the feedback into the DPD learning block is the full, double-precision values computed by \textsc{Matlab}, we get suppression shown by the solid blue curve. We then use \textsc{Matlab}'s fixed point toolbox to convert the values to a signed, fixed-point representation. This introduces quantization noise and degrades the performance. However, for as low as 6-bit ADC, the performance degradation is mostly insignificant. For example, there is only a 2 dB difference in suppression on the right-hand IM3 spur. The 4-bit ADC still suppress throughout the spectrum, but there is a significant performance degradation (14 dB on the right-hand IM3). 
 
 
@@ -508,7 +509,9 @@ The complexity can furthr be reduced if we limit the resolution of the ADC.
 
 
 \section{Conclusion}
-The conclusion goes here.
+Digital predistortion is a valuable method to linearize PAs that does not need to be computationally costly and does not require a complicated hardware overhead. When designing a system with DPD, one consideration should be the width of the ADC. With a low precision ADC with a resolution of four or six bits, the performance of the DPD training can remain mostly intact.
+
+
 
 
 
