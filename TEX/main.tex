@@ -379,18 +379,14 @@ This is a common thing being explored in MMWave and massive MIMO
 
 In this paper, we test the performance of our previous DPD solutions for varying ADC precision. 
 
+\section{Full-Band DPD}
+Most DPD is a variation of what we refer to as full-band DPD where the entire transmit band near the main carriers is linearized. 
+This can reduce the magnitude of multiple spurious emissions such as the third and fifth intermodulation products and the spectral regrowth around the main carriers. 
+However, this comes with a considerable computational complexity especially as the spacing between the carriers becomes large.
+Moreover, the cost of the ADC rapidly increases as the sampling rate grows.
 
-\section{SubBand DPD}
-TEXT
-\begin{figure}[]
-\centering
-\includegraphics[]{SubBandPSD}
-\caption{PSD output when performing sub-band DPD with a low precision ADC feedback path. Here, performance for 8, 6, and 4 bit observations are similar with about 2 dB less IM3 suppression when compared to the double precision PA simulation. }
-\label{subbandpsd}
-\end{figure}
+One potential way to ease this cost and reduce complexity with only a small loss in performance is to reduce the precision of the ADC.
 
-
-\section{FullBand DPD}
 \begin{figure}[]
 \centering
 \includegraphics[]{FullBandPSD}
@@ -398,7 +394,20 @@ TEXT
 \label{fullbandpsd}
 \end{figure}
 
-\section{WARPLab Testing}
+
+\section{Sub-Band DPD}
+An alternative to the full-band DPD is what the authors refer to as sub-band DPD. With this method, one targets specific sub-bands such as an intermodulation product to suppress. This has the effect of drastically reducing sample rates which in turn reduces the running complexity of the algorithm. This method also provides freedom in the sense that specific sub-bands can be targeted as needed. 
+
+The complexity can furthr be reduced if we limit the resolution of the ADC. 
+
+\begin{figure}[]
+\centering
+\includegraphics[]{SubBandPSD}
+\caption{PSD output when performing sub-band DPD with a low precision ADC feedback path. Here, performance for 8, 6, and 4 bit observations are similar with about 2 dB less IM3 suppression when compared to the double precision PA simulation. }
+\label{subbandpsd}
+\end{figure}
+
+%\section{WARPLab Testing}
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
 % For figures, \caption should occur after the \includegraphics.
