@@ -116,7 +116,7 @@
 % *** GRAPHICS RELATED PACKAGES ***
 %
 \ifCLASSINFOpdf
-  % \usepackage[pdftex]{graphicx}
+  \usepackage[pdftex]{graphicx}
   % declare the path(s) where your graphic files are
   % \graphicspath{{../pdf/}{../jpeg/}}
   % and their extensions so you won't have to specify these with
@@ -133,29 +133,6 @@
   % every instance of \includegraphics
   % \DeclareGraphicsExtensions{.eps}
 \fi
-% graphicx was written by David Carlisle and Sebastian Rahtz. It is
-% required if you want graphics, photos, etc. graphicx.sty is already
-% installed on most LaTeX systems. The latest version and documentation
-% can be obtained at: 
-% http://www.ctan.org/pkg/graphicx
-% Another good source of documentation is "Using Imported Graphics in
-% LaTeX2e" by Keith Reckdahl which can be found at:
-% http://www.ctan.org/pkg/epslatex
-%
-% latex, and pdflatex in dvi mode, support graphics in encapsulated
-% postscript (.eps) format. pdflatex in pdf mode supports graphics
-% in .pdf, .jpeg, .png and .mps (metapost) formats. Users should ensure
-% that all non-photo figures use a vector format (.eps, .pdf, .mps) and
-% not a bitmapped formats (.jpeg, .png). The IEEE frowns on bitmapped formats
-% which can result in "jaggedy"/blurry rendering of lines and letters as
-% well as large increases in file sizes.
-%
-% You can find documentation about the pdfTeX application at:
-% http://www.tug.org/applications/pdftex
-
-
-
-
 
 % *** MATH PACKAGES ***
 %
@@ -366,7 +343,8 @@ Houston, TX 77251\\ Email: tarver@rice.edu  cavallar@rice.edu}}
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}
-The abstract goes here.
+Digital Predistortion (DPD) is a popular technique for linearizing a power amplifier (PA) to help reduce the spurious emissions and spectral regrowth. DPD requires the learning of the inverse PA nonlinearities by training on the output of the PA. In practical systems, the analog output of the PA will have to go through an analog-to-digital converter (ADC) so that training can be done on a digital processor. The quantization degrades signal quality and may limit performance of a DPD learning algorithm. However, a lower resolution ADC may cost less and allow for less computational complexity in the digital processing. We study this tradeoff to try to find how much precision is needed in DPD systems.
+
 \end{abstract}
 
 % no keywords
@@ -404,8 +382,21 @@ In this paper, we test the performance of our previous DPD solutions for varying
 
 \section{SubBand DPD}
 TEXT
+\begin{figure}[]
+\centering
+\includegraphics[]{SubBandPSD}
+\caption{PSD output when performing sub-band DPD with a low precision ADC feedback path. Here, performance for 8, 6, and 4 bit observations are similar with about 2 dB less IM3 suppression when compared to the double precision PA simulation. }
+\label{subbandpsd}
+\end{figure}
+
 
 \section{FullBand DPD}
+\begin{figure}[]
+\centering
+\includegraphics[]{FullBandPSD}
+\caption{PSD output when performing full-band DPD with a low precision ADC feedback path.}
+\label{fullbandpsd}
+\end{figure}
 
 \section{WARPLab Testing}
 % An example of a floating figure using the graphicx package.
