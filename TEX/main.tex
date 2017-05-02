@@ -373,7 +373,7 @@ With DPD, the nonlinearities are estimated so that they can be corrected before 
 To do this, we must train our predistorter by observing the signal after the PA.
 In practical situations, we need a feedback bath after the PA that has a downconverter and an ADC.
 For wide bandwidth signals, the sampling rate of the ADC must be fast.
-In mobile applications where power and cost are a concern, one option for reducing the complexity of the system is to use a low precision ADC. 
+In mobile applications where power and cost are a concern, one option for reducing the complexity of the system is to use a low precision ADC. By reducing the precision, the DPD algrothim can be performed with shorter word lengths which would save area and power in an implementation. Low precision ADCs are usually cheaper and consume less power. Moreover, ADCs that support a faster sampling rate are often lower precision.   
 
 This is a common thing being explored in MMWave and massive MIMO
 
@@ -401,7 +401,7 @@ When we perform the DPD algorithm where the feedback into the DPD learning block
 \section{Sub-Band DPD}
 An alternative to the full-band DPD is what the authors refer to as sub-band DPD. With this method, one targets specific sub-bands such as an intermodulation product to suppress. This has the effect of drastically reducing sample rates which in turn reduces the running complexity of the algorithm. This method also provides freedom in the sense that specific sub-bands can be targeted as needed. 
 
-The complexity can furthr be reduced if we limit the resolution of the ADC. 
+The complexity can further be reduced if we limit the resolution of the ADC. 
 
 \begin{figure}[]
 \centering
