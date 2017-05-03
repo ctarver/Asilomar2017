@@ -392,10 +392,12 @@ We then conclude the paper in Section IV.
 \section{Full-Band DPD}
 Most DPD is a variation of what we refer to as full-band DPD where the entire transmit band near the main carriers is linearized. 
 This can reduce the magnitude of multiple spurious emissions such as the third and fifth intermodulation products and the spectral regrowth around the main carriers. 
-However, this comes with a considerable computational complexity especially as the spacing between the carriers becomes large.
-Moreover, the cost of the ADC rapidly increases as the sampling rate grows.
+However, this comes with a considerable computational complexity especially as the spacing between the carriers becomes large \cite{TMTT_SubbandDPD} which also has the negative effect of increasing power consumption and cost in the ADC.
 
-One potential way to ease this cost and reduce complexity with only a small loss in performance is to reduce the precision of the ADC. We illustrate this in Figure \ref{fullbandpsd}. Here, we have two noncontiguous signals like what may be found in LTE-Advanced carrier aggregation. They are each 5 MHz in bandwidth. They are broadcast through a fifth-order, nonlinear PA model with memory effects implemented in \textsc{Matlab}. Intermodulation occurs occurs and introduces large spurious emissions through the nearby spectrum as seen by the black curve.
+Using a previously developed DPD system \cite{Li2016GPU} we illustrate the effect of quantization in Figure \ref{fullbandpsd}. 
+Here, we have two noncontiguous signals like what may be found in LTE-Advanced carrier aggregation. They are each 5 MHz in bandwidth. 
+They are broadcast through a fifth-order, nonlinear PA model with memory effects implemented in \textsc{Matlab}. 
+Intermodulation occurs and introduces large spurious emissions through the nearby spectrum as seen by the black curve.
 
 
 \begin{figure}[]
@@ -406,7 +408,7 @@ One potential way to ease this cost and reduce complexity with only a small loss
 \end{figure}
 
 
-When we perform the DPD algorithm where the feedback into the DPD learning block is the full, double-precision values computed by \textsc{Matlab}, we get suppression shown by the solid blue curve. We then use \textsc{Matlab}'s fixed point toolbox to convert the values to a signed, fixed-point representation. This introduces quantization noise and degrades the performance. However, for as low as 6-bit ADC, the performance degradation is mostly insignificant. For example, there is only a 2 dB difference in suppression on the right-hand IM3 spur. The 4-bit ADC still suppress throughout the spectrum, but there is a significant performance degradation (14 dB on the right-hand IM3). 
+A block diagram of the simulation is shown in Figure \ref{block}. Currently, all computation is done in double precision. However, at the feedback input to the DPD learning, we quantize using the fixed-point toolbox. Word lengths are varied from an unquantified sixty-four bit double all the way to two bits. When we perform the DPD algorithm where the feedback into the DPD learning block is the full, double-precision values computed by \textsc{Matlab}, we get suppression shown by the solid blue curve. We then use signed, fixed-point representation. This introduces quantization noise and degrades the performance. However, for as low as 6-bit ADC, the performance degradation is mostly insignificant. For example, there is only a 2 dB difference in suppression on the right-hand IM3 spur. The 4-bit ADC still suppress throughout the spectrum, but there is a significant performance degradation (14 dB on the right-hand IM3). 
 
 
 \begin{figure}[]
@@ -418,9 +420,13 @@ When we perform the DPD algorithm where the feedback into the DPD learning block
 
 
 \section{Sub-Band DPD}
-An alternative to the full-band DPD is what the authors refer to as sub-band DPD. With this method, one targets specific sub-bands such as an intermodulation product to suppress. This has the effect of drastically reducing sample rates which in turn reduces the running complexity of the algorithm. This method also provides freedom in the sense that specific sub-bands can be targeted as needed. 
+An alternative to the full-band DPD is what the authors refer to as sub-band DPD. 
+With this method, one targets specific sub-bands such as prominent intermodulation products for suppression. 
+This has the effect of drastically reducing sample rates which in turn reduces the running complexity of the algorithm. 
+This method also provides freedom in the sense that specific sub-bands can be targeted as needed. 
 
-The complexity can further be reduced if we limit the resolution of the ADC. 
+Using a previously developed sub-band DPD system \cite{TMTT_SubbandDPD} we illustrate the effect of quantization in Figure \ref{subbandpsd}. Here, we have two noncontiguous signals like what may be found in LTE-Advanced carrier aggregation. They are each 1.4 MHz in bandwidth. They are broadcast through a ninth-order, nonlinear PA model implemented in \textsc{Matlab}. 
+Intermodulation occurs and introduces large spurious emissions through the nearby spectrum as seen by the black curve. We use the sub-band DPD method to target the right-hand, third-order intermodulation spurious emission.
 
 \begin{figure}[]
 \centering
@@ -428,6 +434,8 @@ The complexity can further be reduced if we limit the resolution of the ADC.
 \caption{PSD output when performing sub-band DPD on a scenario with two, noncontiguous, 1.4 MHz LTE uplink carriers with a low precision ADC feedback path. Here, performance for 8, 6, and 4 bit observations are similar with about 2 dB less IM3 suppression when compared to the double precision PA simulation. }
 \label{subbandpsd}
 \end{figure}
+
+The block diagram in Figure \ref{block} represents the simulation. When we perform the DPD algorithm where the feedback into the DPD learning block is the full, double-precision values computed by \textsc{Matlab}, we get suppression shown by the solid blue curve. We then use \textsc{Matlab}'s fixed point toolbox to convert the values to a signed, fixed-point representation. This introduces quantization noise and degrades the performance. However, for as low as a 4-bit ADC, the performance degradation is mostly insignificant. For example, there is only a 2 dB difference in suppression on the right-hand IM3 spur. The 2-bit ADC still suppress throughout the spectrum, but there is a significant performance degradation. 
 
 %\section{WARPLab Testing}
 % An example of a floating figure using the graphicx package.
@@ -528,10 +536,9 @@ The complexity can further be reduced if we limit the resolution of the ADC.
 
 
 \section{Conclusion}
-Digital predistortion is a valuable method to linearize PAs that does not need to be computationally costly and does not require a complicated hardware overhead. When designing a system with DPD, one consideration should be the width of the ADC. With a low precision ADC with a resolution of four or six bits, the performance of the DPD training can remain mostly intact.
-
-
-
+Digital predistortion is a valuable method to linearize PAs that does not need to be computationally costly and does not necessarily require a complicated hardware overhead. 
+When designing a system with DPD, one consideration should be the precision of the ADC. 
+With a low precision ADC of about four or six bits, the performance of the DPD training can remain mostly intact.
 
 
 
