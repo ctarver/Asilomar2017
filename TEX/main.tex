@@ -328,9 +328,8 @@
 Chance Tarver \ and \
 Joseph Cavallaro}
 \IEEEauthorblockA{
-Department of Electrical and Computer Engineering\\
-Rice University,
-Houston, TX 77251\\ Email: tarver@rice.edu  cavallar@rice.edu}}
+Department of Electrical and Computer Engineering, 
+Rice University, Houston, TX \\ Email: tarver@rice.edu  cavallar@rice.edu}}
 
 
 
@@ -370,7 +369,7 @@ This is exacerbated in modern, multi-carrier modulations such as OFDMA which hav
 
 Digital predistortion (DPD) is a method for linearizing a power amplifier (PA). 
 With DPD, the nonlinearities are estimated so that they can be corrected before the PA with their inverse.
-To do this, we must train our predistorter by observing the signal after the PA.
+To do this, we must train our predistorter by observing the signal after the PA \cite{Katz2016}.
 In practical situations, we need a feedback bath after the PA that has a downconverter and an ADC.
 For wide bandwidth signals, the sampling rate of the ADC must be fast.
 In mobile applications where power and cost are a concern, one option for reducing the complexity of the system is to use a low precision ADC. By reducing the precision, the DPD algrothim can be performed with shorter word lengths which would save area and power in an implementation. Low precision ADCs are usually cheaper and consume less power. Moreover, ADCs that support a faster sampling rate are often lower precision.   
@@ -540,20 +539,14 @@ Digital predistortion is a valuable method to linearize PAs that does not need t
 % http://mirror.ctan.org/biblio/bibtex/contrib/doc/
 % The IEEEtran BibTeX style support page is at:
 % http://www.michaelshell.org/tex/ieeetran/bibtex/
-%\bibliographystyle{IEEEtran}
+\bibliographystyle{IEEEtran}
 % argument is your BibTeX string definitions and bibliography database(s)
-%\bibliography{IEEEabrv,../bib/paper}
+\bibliography{IEEEabrv,Ref.bib}
 %
 % <OR> manually copy in the resultant .bbl file
 % set second argument of \begin to the number of references
 % (used to reserve space for the reference number labels box)
-\begin{thebibliography}{1}
 
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
-
-\end{thebibliography}
 
 
 
