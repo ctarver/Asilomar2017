@@ -26,4 +26,20 @@ A.~Katz, J.~Wood, and D.~Chokola, ``{The Evolution of PA Linearization: From
   Classic Feedforward and Feedback Through Analog and Digital Predistortion},''
   \emph{IEEE Microwave Magazine}, vol.~17, no.~2, pp. 32--40, Feb 2016.
 
+\bibitem{Walden99}
+R.~H. Walden, ``Analog-to-digital converter survey and analysis,'' \emph{IEEE
+  Journal on Selected Areas in Communications}, vol.~17, no.~4, pp. 539--550,
+  Apr 1999.
+
+\bibitem{MIMOAdcs}
+S.~Jacobsson, G.~Durisi, M.~Coldrey, U.~Gustavsson, and C.~Studer, ``Throughput
+  analysis of massive mimo uplink with low-resolution adcs,'' \emph{IEEE
+  Transactions on Wireless Communications}, vol.~PP, no.~99, pp. 1--1, 2017.
+
+\bibitem{Heath2015}
+C.~Rusu, R.~Mendez-Rial, N.~Gonzalez-Prelcic, and R.~W. Heath, ``Adaptive
+  one-bit compressive sensing with application to low-precision receivers at
+  mmwave,'' in \emph{2015 IEEE Global Communications Conference (GLOBECOM)},
+  Dec 2015, pp. 1--6.
+
 \end{thebibliography}

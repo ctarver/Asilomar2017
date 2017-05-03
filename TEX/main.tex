@@ -369,12 +369,15 @@ This is exacerbated in modern, multi-carrier modulations such as OFDMA which hav
 
 Digital predistortion (DPD) is a method for linearizing a power amplifier (PA). 
 With DPD, the nonlinearities are estimated so that they can be corrected before the PA with their inverse.
-To do this, we must train our predistorter by observing the signal after the PA \cite{Katz2016}.
-In practical situations, we need a feedback bath after the PA that has a downconverter and an ADC.
-For wide bandwidth signals, the sampling rate of the ADC must be fast.
-In mobile applications where power and cost are a concern, one option for reducing the complexity of the system is to use a low precision ADC. By reducing the precision, the DPD algrothim can be performed with shorter word lengths which would save area and power in an implementation. Low precision ADCs are usually cheaper and consume less power. Moreover, ADCs that support a faster sampling rate are often lower precision.   
+To do this, we must train our predistorter by observing the signal after the PA.
+In practical situations, we need a feedback path after the PA that has a downconverter and an ADC.
+Typically, DPD bandwidth is five times the signal bandwidth  \cite{Katz2016}. Hence, for wide bandwidth signals, the sampling rate of the ADC must be fast. 
 
-This is a common thing being explored in MMWave and massive MIMO
+In mobile applications where power and cost are a concern, one option for reducing the complexity of the system is to use a low precision ADC. 
+By reducing the precision, the DPD algrothim can be performed with shorter word lengths which would save area and power in an implementation. 
+Low precision ADCs often consume less power and support faster sampling rates than higher precision devices \cite{Walden99}. Moreover, these ADC are often cheaper. 
+
+For these reasons, the use of low precision ADCs is being considered in multiple emerging areas of communications. For example, in massive MIMO resolutions as low as a single bit are being considered to help alleviate the data throughput requirements when hundreds of antennas are being used simultaneously \cite{MIMOAdcs}. In mmWave, there are large bandwidths available that could enable fast data rates. This necessitates the use of ADCs with fast sampling rates. Again, low-precision ADCs are being considered for this application to reduce the system complexity and power requirements \cite{Heath2015}. 
 
 In this paper, we test the performance of our previous DPD solutions for varying ADC precision. 
 
@@ -539,6 +542,7 @@ Digital predistortion is a valuable method to linearize PAs that does not need t
 % http://mirror.ctan.org/biblio/bibtex/contrib/doc/
 % The IEEEtran BibTeX style support page is at:
 % http://www.michaelshell.org/tex/ieeetran/bibtex/
+\newpage
 \bibliographystyle{IEEEtran}
 % argument is your BibTeX string definitions and bibliography database(s)
 \bibliography{IEEEabrv,Ref.bib}
