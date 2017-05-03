@@ -380,6 +380,14 @@ Low precision ADCs often consume less power and support faster sampling rates th
 For these reasons, the use of low precision ADCs is being considered in multiple emerging areas of communications. For example, in massive MIMO resolutions as low as a single bit are being considered to help alleviate the data throughput requirements when hundreds of antennas are being used simultaneously \cite{MIMOAdcs}. In mmWave, there are large bandwidths available that could enable fast data rates. This necessitates the use of ADCs with fast sampling rates. Again, low-precision ADCs are being considered for this application to reduce the system complexity and power requirements \cite{Heath2015}. 
 
 In this paper, we test the performance of our previous DPD solutions for varying ADC precision. 
+By doing so, we alter the resolution of the feedback path to the DPD learning. 
+As we remove bits, we increase quantization noise which we expect to limit performance. 
+What we find is that a significant number of bits can be removed before there is a significant impact on performance.
+
+The paper is organized as follows. 
+Section II presents a simulation where we reduce the precision on a full-band DPD. 
+In Section III, we repeat the simulation with a sub-band DPD. 
+We then conclude the paper in Section IV.
 
 \section{Full-Band DPD}
 Most DPD is a variation of what we refer to as full-band DPD where the entire transmit band near the main carriers is linearized. 
@@ -542,7 +550,6 @@ Digital predistortion is a valuable method to linearize PAs that does not need t
 % http://mirror.ctan.org/biblio/bibtex/contrib/doc/
 % The IEEEtran BibTeX style support page is at:
 % http://www.michaelshell.org/tex/ieeetran/bibtex/
-\newpage
 \bibliographystyle{IEEEtran}
 % argument is your BibTeX string definitions and bibliography database(s)
 \bibliography{IEEEabrv,Ref.bib}
