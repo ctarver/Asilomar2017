@@ -390,6 +390,14 @@ In Section III, we repeat the simulation with a sub-band DPD.
 We then conclude the paper in Section IV.
 
 \section{Full-Band DPD}
+
+\begin{figure}[]
+	\centering
+	\includegraphics[width=\columnwidth]{FullBandIndirect}
+	\caption{Block diagram of the full-band DPD simulation performed. The signal generation, amplification, indirect DPD learning, and DPD application are performed with double precision in \textsc{Matlab}. We emulate an ADC by quantizing the feedback from the PA to the DPD learning.}
+	\label{block}
+\end{figure}
+
 Most DPD is a variation of what we refer to as full-band DPD where the entire transmit band near the main carriers is linearized. 
 This can reduce the magnitude of multiple spurious emissions such as the third and fifth intermodulation products and the spectral regrowth around the main carriers. 
 However, this comes with a considerable computational complexity especially as the spacing between the carriers becomes large \cite{TMTT_SubbandDPD} which also has the negative effect of increasing power consumption and cost in the ADC.
@@ -398,14 +406,6 @@ Using a previously developed DPD system \cite{Li2016GPU} we illustrate the effec
 Here, we have two noncontiguous signals like what may be found in LTE-Advanced carrier aggregation. They are each 5 MHz in bandwidth. 
 They are broadcast through a fifth-order, nonlinear PA model with memory effects implemented in \textsc{Matlab}. 
 Intermodulation occurs and introduces large spurious emissions through the nearby spectrum as seen by the black curve.
-
-
-\begin{figure}[]
-	\centering
-	\includegraphics[width=\columnwidth]{BlockDiagram2}
-	\caption{Block diagram of the simulation performed. The signal generation, amplification, DPD learning, and DPD application are performed with double precision in \textsc{Matlab}. We emulate an ADC by quantizing the feedback from the PA to the DPD learning.}
-	\label{block}
-\end{figure}
 
 
 A block diagram of the simulation is shown in Figure \ref{block}. Currently, all computation is done in double precision. However, at the feedback input to the DPD learning, we quantize using the fixed-point toolbox. Word lengths are varied from an unquantified sixty-four bit double all the way to two bits. When we perform the DPD algorithm where the feedback into the DPD learning block is the full, double-precision values computed by \textsc{Matlab}, we get suppression shown by the solid blue curve. We then use signed, fixed-point representation. This introduces quantization noise and degrades the performance. However, for as low as 6-bit ADC, the performance degradation is mostly insignificant. For example, there is only a 2 dB difference in suppression on the right-hand IM3 spur. The 4-bit ADC still suppress throughout the spectrum, but there is a significant performance degradation (14 dB on the right-hand IM3). 
@@ -427,6 +427,13 @@ This method also provides freedom in the sense that specific sub-bands can be ta
 
 Using a previously developed sub-band DPD system \cite{TMTT_SubbandDPD} we illustrate the effect of quantization in Figure \ref{subbandpsd}. Here, we have two noncontiguous signals like what may be found in LTE-Advanced carrier aggregation. They are each 1.4 MHz in bandwidth. They are broadcast through a ninth-order, nonlinear PA model implemented in \textsc{Matlab}. 
 Intermodulation occurs and introduces large spurious emissions through the nearby spectrum as seen by the black curve. We use the sub-band DPD method to target the right-hand, third-order intermodulation spurious emission.
+
+\begin{figure}[]
+	\centering
+	\includegraphics[width=\columnwidth]{SubBand}
+	\caption{Block diagram of the sub-band DPD simulation performed. Here, we tune the feedback reciever to the frequency of the spur and pass it through a low-pass filter. This plus the signal generation, amplification, DPD learning, and DPD application are performed with double precision in \textsc{Matlab}. We emulate an ADC by quantizing the feedback from the PA to the DPD learning.}
+	\label{block2}
+\end{figure}
 
 \begin{figure}[]
 \centering
