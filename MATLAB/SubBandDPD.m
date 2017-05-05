@@ -33,7 +33,7 @@ classdef SubBandDPD
          
          obj.learningBlockLength  = 1024;
          obj.filteringBlockLength = 1024;
-         obj.learningRateMu       = 0.025;
+         obj.learningRateMu       = 1;
          obj.nLearningSamples     = 18000*4;
          obj.alpha                = 0;
          obj.phaseshiftDPD        = 1;%(0.5403 - 0.8415*i);  %Need for WARP;
@@ -45,7 +45,7 @@ classdef SubBandDPD
          obj = getLMSBasis(obj,signal);
          
          % Go perform learning.
-         obj = performDpdLearning2(obj,pa,signal);
+         obj = performDpdLearning(obj,pa,signal);
          
       end
       function obj = getDPDFreq(obj,signal)
@@ -110,10 +110,10 @@ classdef SubBandDPD
             dpdBlockIndx    = dpdBlockIndx + 1;
             obj = processBlock(obj,signal,pa,sample,dpdBlockIndx);
          end
-         %          figure();
-         %          plot(0:length(obj.DPD_Coeff)-1,real(obj.DPD_Coeff));
-         %          hold on
-         %          plot(0:length(obj.DPD_Coeff)-1,imag(obj.DPD_Coeff));
+                  figure();
+                  plot(0:length(obj.DPD_Coeff)-1,real(obj.DPD_Coeff));
+                  hold on
+                  plot(0:length(obj.DPD_Coeff)-1,imag(obj.DPD_Coeff));
          %
          %          figure()
          %          plot(real(obj.correlation))
