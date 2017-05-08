@@ -32,21 +32,22 @@ R.~H. Walden, ``Analog-to-digital converter survey and analysis,'' \emph{IEEE
   Apr 1999.
 
 \bibitem{MIMOAdcs}
-S.~Jacobsson, G.~Durisi, M.~Coldrey, U.~Gustavsson, and C.~Studer, ``Throughput
-  analysis of massive mimo uplink with low-resolution adcs,'' \emph{IEEE
-  Transactions on Wireless Communications}, vol.~PP, no.~99, pp. 1--1, 2017.
+S.~Jacobsson, G.~Durisi, M.~Coldrey, U.~Gustavsson, and C.~Studer,
+  ``{Throughput Analysis of Massive MIMO Uplink with Low-Resolution ADCs},''
+  \emph{IEEE Transactions on Wireless Communications}, vol.~PP, no.~99, pp.
+  1--1, 2017.
 
 \bibitem{Heath2015}
-C.~Rusu, R.~Mendez-Rial, N.~Gonzalez-Prelcic, and R.~W. Heath, ``Adaptive
-  one-bit compressive sensing with application to low-precision receivers at
-  mmwave,'' in \emph{2015 IEEE Global Communications Conference (GLOBECOM)},
+C.~Rusu, R.~Mendez-Rial, N.~Gonzalez-Prelcic, and R.~W. Heath, ``{Adaptive
+  One-Bit Compressive Sensing with Application to Low-Precision Receivers at
+  mmWave},'' in \emph{2015 IEEE Global Communications Conference (GLOBECOM)},
   Dec 2015, pp. 1--6.
 
 \bibitem{TMTT_SubbandDPD}
 \BIBentryALTinterwordspacing
 M.~Abdelaziz, L.~Anttila, C.~Tarver, K.~Li, J.~R. Cavallaro, and M.~Valkama,
-  ``Low-complexity subband digital predistortion for spurious emission
-  suppression in noncontiguous spectrum access,'' \emph{IEEE Transactions on
+  ``{Low-Complexity Subband Digital Predistortion for Spurious Emission
+  Suppression in Noncontiguous Spectrum Access},'' \emph{IEEE Transactions on
   Microwave Theory and Techniques}, vol.~64, pp. 3501--3517, 2016. [Online].
   Available:
   \url{http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=7563855}

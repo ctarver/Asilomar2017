@@ -403,13 +403,12 @@ Most DPD is a variation of what we refer to as full-band DPD where the entire tr
 This can reduce the magnitude of multiple spurious emissions such as the third and fifth intermodulation products and the spectral regrowth around the main carriers. 
 However, this comes with a considerable computational complexity especially as the spacing between the carriers becomes large \cite{TMTT_SubbandDPD} which also has the negative effect of increasing power consumption and cost in the ADC.
 
+A block diagram of the simulation is shown in Figure \ref{block}. Currently, all computation is done in double precision. However, at the feedback input to the DPD learning, we quantize using the fixed-point toolbox. Word lengths are varied from an unquantified sixty-four bit double all the way to two bits. When we perform the DPD algorithm where the feedback into the DPD learning block is the full, double-precision values computed by \textsc{Matlab}, we get suppression shown by the solid blue curve in Figure \ref{fullbandpsd}. We then use signed, fixed-point representation. This introduces quantization noise and degrades the performance. However, for as low as 6-bit ADC, the performance degradation is mostly insignificant. For example, there is only a 2 dB difference in suppression on the right-hand IM3 spur. The 4-bit ADC still suppress throughout the spectrum, but there is a significant performance degradation (14 dB on the right-hand IM3). 
+
 Using a previously developed DPD system \cite{Li2016GPU} we illustrate the effect of quantization in Figure \ref{fullbandpsd}. 
 Here, we have two noncontiguous signals like what may be found in LTE-Advanced carrier aggregation. They are each 5 MHz in bandwidth. 
 They are broadcast through a fifth-order, nonlinear PA model with memory effects implemented in \textsc{Matlab}. 
 Intermodulation occurs and introduces large spurious emissions through the nearby spectrum as seen by the black curve.
-
-
-A block diagram of the simulation is shown in Figure \ref{block}. Currently, all computation is done in double precision. However, at the feedback input to the DPD learning, we quantize using the fixed-point toolbox. Word lengths are varied from an unquantified sixty-four bit double all the way to two bits. When we perform the DPD algorithm where the feedback into the DPD learning block is the full, double-precision values computed by \textsc{Matlab}, we get suppression shown by the solid blue curve. We then use signed, fixed-point representation. This introduces quantization noise and degrades the performance. However, for as low as 6-bit ADC, the performance degradation is mostly insignificant. For example, there is only a 2 dB difference in suppression on the right-hand IM3 spur. The 4-bit ADC still suppress throughout the spectrum, but there is a significant performance degradation (14 dB on the right-hand IM3). 
 
 Here, we are limited by the available dynamic range of the low precision. 
 As we reduce the bits, the noise floor of the feedback raises due to quantization noise. 
@@ -419,7 +418,7 @@ The ADC becomes saturated by the power of the main carriers and simply can not s
 \begin{figure}[]
 \centering
 \includegraphics[]{FullBandPSD}
-\caption{PSD output when performing full-band DPD on a scenario with two, noncontiguous, 5 MHz LTE uplink carrier with a low precision ADC feedback path. Here, performance for the 8 bit and 6 bit ADCs are similar with about 2 dB less IM3 suppression when compared to the double precision PA simulation.}
+\caption{PSD output when performing full-band DPD on a scenario with two, noncontiguous, 5 MHz LTE uplink carriers with a low precision ADC feedback path. Here, performance for the 8 bit and 6 bit ADCs are similar with about 2 dB less IM3 suppression when compared to the double precision PA simulation.}
 \label{fullbandpsd}
 \end{figure}
 
@@ -436,26 +435,26 @@ Intermodulation occurs and introduces large spurious emissions through the nearb
 When using the sub-band method, it is not necessary to receive the main carriers in the feedback path.
 Instead, a sub-band DPD can be designed as follows. 
 The RF downconverter can be tuned to the specific frequency of a problematic spurious emission.
-Then, an analog LPF can be used for anti-aliasing and attenuation of the higher-power main carriers. 
+Then, an analog low-pass filter (LPF) can be used for anti-aliasing and attenuation of the higher-power main carriers. 
 By doing this, we can better use the low dynamic-range available when using a low-precision ADC to receive just the spurious emission.
 This will provide better performance in the DPD learning algorithm. 
 The block diagram of the proposed system and how it was simulated is shown in Figure \ref{block2}.
 
 \begin{figure}[]
 	\centering
-	\includegraphics[width=\columnwidth]{SubBand}
-	\caption{Block diagram of the sub-band DPD simulation performed. Here, we tune the feedback reciever to the frequency of the spur and pass it through a low-pass filter. This plus the signal generation, amplification, DPD learning, and DPD application are performed with double precision in \textsc{Matlab}. We emulate an ADC by quantizing the feedback from the PA to the DPD learning.}
-	\label{block2}
+	\includegraphics[]{SubBandPSD}
+	\caption{PSD output when performing sub-band DPD on a scenario with two, noncontiguous, 1.4 MHz LTE uplink carriers with a 1 bit ADC feedback path. Here, performance for the single bit observations has about 2 dB less IM3 suppression when compared to the double precision PA simulation. }
+	\label{subbandpsd}
 \end{figure}
 
 \begin{figure}[]
-\centering
-\includegraphics[]{SubBandPSD}
-\caption{PSD output when performing sub-band DPD on a scenario with two, noncontiguous, 1.4 MHz LTE uplink carriers with a 1 bit ADC feedback path. Here, performance for the single bit observations has about 2 dB less IM3 suppression when compared to the double precision PA simulation. }
-\label{subbandpsd}
+	\centering
+	\includegraphics[width=\columnwidth]{SubBand}
+	\caption{Block diagram of the sub-band DPD simulation performed. Here, we tune the feedback receiver to the frequency of the spur and pass it through a low-pass filter. The frequency shift, low-pass filtering, signal generation, amplification, DPD learning, and DPD application are performed with double precision in \textsc{Matlab}. We emulate an ADC by quantizing the feedback from the PA to the DPD learning.}
+	\label{block2}
 \end{figure}
 
- When we perform the third-order DPD algorithm where the feedback into the DPD learning block is the full, double-precision values computed by \textsc{Matlab}, we get suppression shown by the solid blue curve. We then use \textsc{Matlab}'s fixed point toolbox to convert the values to a signed, fixed-point representation. This introduces quantization noise and degrades the performance. 
+ When we perform the third-order DPD algorithm where the feedback into the DPD learning block is the full, double-precision values computed by \textsc{Matlab}, we get suppression shown by the solid blue curve in Figure \ref{subbandpsd}. We then use \textsc{Matlab}'s fixed point toolbox to convert the values to a signed, fixed-point representation. This introduces quantization noise and degrades the performance. 
  However, for as low as a single-bit ADC, the performance degradation is mostly insignificant. For example, there is only a 2 dB difference in suppression on the right-hand IM3 spur. 
  
  This creates an exciting opportunity for reducing the complexity of the hardware necessary for a system using the sub-band DPD algorithm. 
@@ -463,19 +462,19 @@ The block diagram of the proposed system and how it was simulated is shown in Fi
  The ADC can be replaced by a comparator.
  This has the effect of reducing area and power overhead which is attractive for mobile devices.
  
- The algorithmic complexity can also be reduced. The sub-band DPD learning algorithm is accomplished in \cite{TMTT_SubbandDPD} via an LMS adaptive training. A version of this is shown below.
+ The algorithmic complexity can also be reduced. The sub-band DPD learning algorithm is accomplished in \cite{TMTT_SubbandDPD} via an LMS adaptive training. A version of this is shown below,
  \begin{align}
- \alpha^*(n+1) &= \alpha^*(n) - \frac{\mu}{|u(n)||^2 + C} e^*(n) u(n)
+ \alpha^*(n+1) &= \alpha^*(n) - \frac{\mu}{|u(n)||^2 + C} e^*(n) u(n).
  \label{eq:NLMS_Update_memory}
  \end{align}
 Here $\alpha$ is the DPD coefficient,
-$e(n)$ is the error signal vector of a spur at the PA output, $u(n)$ is the LMS reference signal, $\mu$ is then LMS learning rate, and $n$ denotes the sample index. 
-The DPD application is achieved by adding a term to the PA input.
+$e(n)$ is the error signal vector of a spur at the PA output, $u(n)$ is the LMS reference signal, $\mu$ is the LMS learning rate, and $n$ denotes the sample index. 
+The DPD application is achieved by adding a term to the PA input,
 \begin{align}
-\tilde{x}(n) &=  x(n) + \left[\alpha \star u(n) \right] e^{j 2\pi \frac{f_{spur}}{f_s} n}
+\tilde{x}(n) &=  x(n) + \left[\alpha \star u(n) \right] e^{j 2\pi \frac{f_{spur}}{f_s} n}.
 \end{align}
 
-The complex multiplication of the error signal by the reference signal in Equation \ref{eq:NLMS_Update_memory}, can be simplified when the error signal is only 1-bit. The multiplication becomes sign changes and additions to $u(n)$. This reduces the complexity which helps simply the implementation of the learning algorithm. 
+The complex multiplication of the error signal by the reference signal in Equation \ref{eq:NLMS_Update_memory}, can be simplified when the error signal is only 1-bit. The multiplication becomes sign changes and additions to $u(n)$. This reduces the complexity which helps simplify the implementation of the learning algorithm. 
 
 
 %\section{WARPLab Testing}
