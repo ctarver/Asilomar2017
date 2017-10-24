@@ -8,10 +8,10 @@
 %\input{theguy28pt.clo}
 %\makeatother
 
-\title{\bf Multi Component Carrier, Sub-Band DPD and G\hsc{nu}Radio Implementation} 
-\institute{Rice University$^1$ and Tampere University of Technology$^2$} % See Section 4.1
+\title{\bf Digital Predistortion with Low Precision ADCs} 
+\institute{Rice University} % See Section 4.1
 %\titlegraphic{\includegraphics[width=5in]{Rice_logo_hi_res.png}}
-\author{Chance Tarver$^1$, Mahmoud Abdelaziz$^2$, Lauri Anttila$^2$, and Joseph Cavallaro$^1$} 
+\author{Chance Tarver and Joseph R. Cavallaro} 
 \usetheme{Basic} % See Section 5
 
 %% THEME STUFF %%
@@ -51,8 +51,8 @@ titlegraphictotitledistance = 0pt
 \colorlet{noteframecolor}{black}
 
 \makeatletter
-%\usepackage{helvet}
-%\renewcommand*{\familydefault}{\sfdefault}% Let's have a sans serif font - See more at: http://latex-cookbook.net/cookbook/examples/poster/#sthash.jDLWH62B.dpuf
+\usepackage{helvet}
+\renewcommand*{\familydefault}{\sfdefault}% Let's have a sans serif font - See more at: http://latex-cookbook.net/cookbook/examples/poster/#sthash.jDLWH62B.dpuf
 \renewcommand\TP@maketitle{%
   \centering
    \begin{minipage}[b]{1\linewidth}
@@ -65,11 +65,11 @@ titlegraphictotitledistance = 0pt
         \vspace*{1em}
         {\LARGE \@institute}
     \end{minipage}%
-%      \tikz[overlay]\node[scale=1,anchor=east,xshift=16in,yshift=0.9in,inner sep=0pt] {%
-%       \includegraphics[width=4in]{tut.jpg}
- %         }; 
-      \tikz[overlay]\node[scale=1,anchor=east,xshift=4.4in,yshift=1.3in,inner sep=0pt] {%
-       \includegraphics[width=4in]{Rice_logo_hi_res.png}       
+     \tikz[overlay]\node[scale=1,anchor=east,xshift=16in,yshift=1.5in,inner sep=0pt] {%
+       \includegraphics[width=6in]{ECE}
+          }; 
+      \tikz[overlay]\node[scale=1,anchor=east,xshift=4.4in,yshift=1.6in,inner sep=0pt] {%
+       \includegraphics[width=6in]{Rice_logo_hi_res.png}       
    };   
 }
 \makeatother
