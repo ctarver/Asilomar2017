@@ -15,7 +15,7 @@
 \usetheme{Basic} % See Section 5
 
 %% THEME STUFF %%
-\geometry{paperwidth=42in,paperheight=42in}
+\geometry{paperwidth=40in,paperheight=40in}
 \definecolor{riceblue}{RGB}{0,36,106}
 \definecolor{ricegray}{RGB}{94,96,98}
 %\titlegraphicheight{1mm}
@@ -23,7 +23,7 @@
 
 %Put logo at the side
 \definetitlestyle{sampletitle}{
-width=40in, roundedcorners=20, linewidth=2pt, innersep=5pt,
+width=38in, roundedcorners=20, linewidth=2pt, innersep=5pt,
 titletotopverticalspace=15mm, titletoblockverticalspace=18mm,
 titlegraphictotitledistance = 0pt
 }{
@@ -68,7 +68,7 @@ titlegraphictotitledistance = 0pt
      \tikz[overlay]\node[scale=1,anchor=east,xshift=16in,yshift=1.5in,inner sep=0pt] {%
        \includegraphics[width=6in]{ECE}
           }; 
-      \tikz[overlay]\node[scale=1,anchor=east,xshift=4.4in,yshift=1.6in,inner sep=0pt] {%
+      \tikz[overlay]\node[scale=1,anchor=east,xshift=4.2in,yshift=1.7in,inner sep=0pt] {%
        \includegraphics[width=6in]{Rice_logo_hi_res.png}       
    };   
 }
@@ -88,17 +88,17 @@ titlegraphictotitledistance = 0pt
 	\block{Motivation}
 	{    \Large
 		\begin{itemize}
-			\item {\bf Spectrum Scarcity $\rightarrow$ Frequency Agile Standards}
+			\item {\bf Spectrum scarcity is leading to more frequency-agile standards}
 			      \begin{itemize}
-				      \item Non-contiguous Transmission
+				      \item Non-contiguous transmission
 				      \item Carrier Aggregation (CA) in LTE-Advanced
-				      \item Cognitive Radio
-				      \item 5G New Radio (NR) Cellular
+				      \item Cognitive radio
+				      \item 5G New Radio (NR) cellular
 			      \end{itemize}
 			\item {\bf Non-contiguous carriers intermodulate}
 			      \begin{itemize}
 				      \item Caused by nonlinearities in power amplifiers (PAs)
-				      \item Undesired spurious emissions (spurs)
+				      \item Undesired spurious emissions (spurs) and spectral regrowth
 				      \item Could interfere with nearby channels
 				      \item Self-interference to own receiver when using FDD
 				            %frequency-division duplexing
@@ -109,14 +109,14 @@ titlegraphictotitledistance = 0pt
 			%	      \item 4x20 MHz carrier aggregation downlink, 2x20 MHz uplink
 			%      \end{itemize}
 			%     \vspace{1mm}
-			\item{\textbf{\textit{ Need efficient way to linearize for this scenario}}}
 			\item{\textbf{\textit{ DPD requires extra hardware}}}
-			      \begin{itemize}
-				      \item Extra RX chains
-				      \item Larger area
-				      \item More Power
-			      \end{itemize}
-		\end{itemize}  }
+				\begin{itemize}
+					\item Extra RX chains with fast sampling rates 
+					\item Larger area
+					\item More power
+				\end{itemize}			
+			\item{\textbf{\textit{ Need computationally and hardware efficient way to linearize for this scenario}}} 
+			\end{itemize}}
 	%\block{Power Spectral Density}{
 		%\begin{tikzfigure}[\large Intermodulations when broadcasting more than 2 carriers.]
 		%\label{fig:fig1}
@@ -155,26 +155,28 @@ titlegraphictotitledistance = 0pt
 				      \item Reduce the necessary area
 				      \item Reduce the power
 				      \item Reduce the cost
+				      \item Reduce the computational complexity by using shorter word lengths
+				      \item Increase sampling rates 
 			      \end{itemize}
 		\end{itemize}
 	}
 
-	\block{M\hsct{atlab} Simulation}{\Large
+	\column{0.33}
+		\block{M\hsct{atlab} Simulator}{\Large
 		\begin{itemize}
 			\item {\bf LTE-Advanced CA Scenario}
-			      \begin{itemize}
-				      \item Two, 5 MHz component carriers
-				      \item 9th order, parallel Hammerstein PA model
-				      \item Fixed point toolbox to emulate ADC
-			      \end{itemize}
+			\begin{itemize}
+				\item Two, 5 MHz component carriers
+				\item 5$^{th}$ order, parallel Hammerstein PA model
+				\item Fixed point toolbox to emulate ADC
+			\end{itemize}
 		\end{itemize}
 	}
-	\column{0.33}
 	\block{Full-band DPD Simulations}{\Large
 		\begin{itemize}
 			\item {\bf Simulation Architecture}
 		\end{itemize}
-		\vspace{-1in}
+		\vspace{-2in}
 		\begin{tikzfigure}[]
 			\label{fig:fig1}
 			\centering
@@ -190,7 +192,7 @@ titlegraphictotitledistance = 0pt
 		\begin{itemize}
 			\item {\bf Suppression Results:}
 		\end{itemize}
-		\vspace{-1in}
+		\vspace{-1.5in}
 		\begin{tikzfigure}[]
 			\label{fig:fig1}
 			\centering
@@ -223,7 +225,7 @@ titlegraphictotitledistance = 0pt
 		\begin{itemize}
 			\item {\bf Simulation Architecture}
 		\end{itemize}
-		\vspace{-1in}		
+		\vspace{-2in}		
 		\begin{tikzfigure}[]
 			\label{fig:fig1}
 			\centering
@@ -233,13 +235,13 @@ titlegraphictotitledistance = 0pt
 		\begin{itemize}
 			\item[] {} %Empty item to allow the 
 			\begin{itemize}
-				\item {\textsc{Matlab} simulation}
+				\item {Uses LMS adaptive training to learn inverse of PA nonlinearities}
 			\end{itemize}
 		\end{itemize}	
 		\begin{itemize}
 			\item {\bf Suppression Results:}
 		\end{itemize}
-		\vspace{-1in}	
+		\vspace{-1.5in}	
 		\begin{tikzfigure}[]
 			\label{fig:fig1}
 			\centering
@@ -249,6 +251,8 @@ titlegraphictotitledistance = 0pt
 			\item[] {} %Empty item to allow the 
 			\begin{itemize}
 				\item {Near ideal performance for as low as 1 bit}
+				\item {By targeting a single spur, gain can be set to get better resolution of the signal}
+				\item {Main carriers no longer likely to saturate the ADC}								
 			\end{itemize}
 		\end{itemize}		
 	}
@@ -282,7 +286,8 @@ titlegraphictotitledistance = 0pt
 
 	\block{Future Work}{\Large
 		\begin{itemize}
-			\item {\bf Main carrier linearization}
+			\item {\bf Computational complexity analysis}
+			\item {\bf Multi sub-band, single-bit DPD solution}
 			      %\begin{itemize}
 			      %    \item Use a variation of the sub-band DPD method to reduce in-band emission. 
 			      %\end{itemize}
