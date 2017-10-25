@@ -8,7 +8,7 @@
 %\input{theguy28pt.clo}
 %\makeatother
 
-\title{\bf Digital Predistortion with Low Precision ADCs} 
+\title{\bf Digital Predistortion with Low-Precision ADCs} 
 \institute{Rice University} % See Section 4.1
 %\titlegraphic{\includegraphics[width=5in]{Rice_logo_hi_res.png}}
 \author{Chance Tarver and Joseph R. Cavallaro} 
@@ -93,7 +93,7 @@ titlegraphictotitledistance = 0pt
 				      \item Non-contiguous Transmission
 				      \item Carrier Aggregation (CA) in LTE-Advanced
 				      \item Cognitive Radio
-				      \item 5G Cellular
+				      \item 5G New Radio (NR) Cellular
 			      \end{itemize}
 			\item {\bf Non-contiguous carriers intermodulate}
 			      \begin{itemize}
@@ -103,12 +103,12 @@ titlegraphictotitledistance = 0pt
 				      \item Self-interference to own receiver when using FDD
 				            %frequency-division duplexing
 			      \end{itemize}
-			\item{\bf Current 4G chipsets support up to 4 carriers}
-			      \begin{itemize}
-				      \item Snapdragon 835
-				      \item 4x20 MHz carrier aggregation downlink, 2x20 MHz uplink
-			      \end{itemize}
-			      \vspace{1mm}
+			%\item{\bf Current 4G chipsets support up to 4 carriers}
+			%      \begin{itemize}
+			%	      \item Snapdragon 835
+			%	      \item 4x20 MHz carrier aggregation downlink, 2x20 MHz uplink
+			%      \end{itemize}
+			%     \vspace{1mm}
 			\item{\textbf{\textit{ Need efficient way to linearize for this scenario}}}
 			\item{\textbf{\textit{ DPD requires extra hardware}}}
 			      \begin{itemize}
@@ -162,9 +162,9 @@ titlegraphictotitledistance = 0pt
 		\begin{itemize}
 			\item {\bf LTE-Advanced CA Scenario}
 			      \begin{itemize}
-				      \item Two, 5 MHz CCs
-				      \item Bandpass filter around passpand on the RF Frontend
-				      \item Only one spurious region is in violation of the emission limits
+				      \item Two, 5 MHz component carriers
+				      \item 9th order, parallel Hammerstein PA model
+				      \item Fixed point toolbox to emulate ADC
 			      \end{itemize}
 		\end{itemize}
 	}
