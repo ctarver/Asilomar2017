@@ -150,10 +150,11 @@ titlegraphictotitledistance = 0pt
 	%}
 	\block{Main Idea}{\Large
 		\begin{itemize}
-			\item {\bf Use a lower precision ADC to reduce the area and cost for applying DPD on a UE device}
+			\item {\bf \textit{Use a lower precision ADC for DPD on a UE device}}
 			      \begin{itemize}
-				      \item Iteratively learn coefficients as necessary using adaptive, LMS algorithm.
-				      \item Apply them as in Equation 5 to reduce spurious emissions.
+				      \item Reduce the necessary area
+				      \item Reduce the power
+				      \item Reduce the cost
 			      \end{itemize}
 		\end{itemize}
 	}
@@ -173,27 +174,34 @@ titlegraphictotitledistance = 0pt
 		\begin{itemize}
 			\item {\bf Simulation Architecture}
 		\end{itemize}
-
+		\vspace{-1in}
 		\begin{tikzfigure}[]
 			\label{fig:fig1}
 			\centering
 			\includegraphics[width=12in]{../TEX/FullBandIndirect.pdf}
 		\end{tikzfigure}
-
+		\vspace{-1in}
 		\begin{itemize}
 			\item[] {} %Empty item to allow the 
 			      \begin{itemize}
-				      \item {\textsc{Matlab} simulation}
-				      \item {9th order Parallel Hammerstein PA model}
+				      \item {Traditional, indirect-learning DPD}
 			      \end{itemize}
 		\end{itemize}
-
+		\begin{itemize}
+			\item {\bf Suppression Results:}
+		\end{itemize}
+		\vspace{-1in}
 		\begin{tikzfigure}[]
 			\label{fig:fig1}
 			\centering
 			\includegraphics[width=12in]{../TEX/FullBandPSD.pdf}
 		\end{tikzfigure}
-
+		\begin{itemize}
+			\item[] {} %Empty item to allow the 
+			\begin{itemize}
+				\item {Near ideal performance for as low as 6 bits}
+			\end{itemize}
+		\end{itemize}	
 	}
 
 
@@ -212,19 +220,40 @@ titlegraphictotitledistance = 0pt
 
 	\column{0.33}
 	\block{Sub-band DPD Simulations}{\Large
+		\begin{itemize}
+			\item {\bf Simulation Architecture}
+		\end{itemize}
+		\vspace{-1in}		
 		\begin{tikzfigure}[]
 			\label{fig:fig1}
 			\centering
 			\includegraphics[width=12in]{../TEX/SubBand.pdf}
 		\end{tikzfigure}
+		\vspace{-1in}
+		\begin{itemize}
+			\item[] {} %Empty item to allow the 
+			\begin{itemize}
+				\item {\textsc{Matlab} simulation}
+			\end{itemize}
+		\end{itemize}	
+		\begin{itemize}
+			\item {\bf Suppression Results:}
+		\end{itemize}
+		\vspace{-1in}	
 		\begin{tikzfigure}[]
 			\label{fig:fig1}
 			\centering
 			\includegraphics[width=12in]{../TEX/SubBandPSD.pdf}
 		\end{tikzfigure}
+		\begin{itemize}
+			\item[] {} %Empty item to allow the 
+			\begin{itemize}
+				\item {Near ideal performance for as low as 1 bit}
+			\end{itemize}
+		\end{itemize}		
 	}
 
-	\block{G\hsct{nu}Radio Simulator}{\Large
+	%\block{G\hsct{nu}Radio Simulator}{\Large
 		%\begin{itemize}
 		%\item {\bf GNURadio}
 		%\begin{itemize}
@@ -246,7 +275,7 @@ titlegraphictotitledistance = 0pt
 		%\end{tikzfigure}
 
 		%\end{itemize}
-	}
+	%}
 	%\note[targetoffsetx=0.5in,targetoffsety=-5.5in,width = 6in,connection,rotate=2]{\bf Can change carrier magnitude and placment, PA model, and DPD application dynamically.}
 
 
