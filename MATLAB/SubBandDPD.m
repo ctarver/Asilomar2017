@@ -114,6 +114,8 @@ classdef SubBandDPD
                   plot(0:length(obj.DPD_Coeff)-1,real(obj.DPD_Coeff));
                   hold on
                   plot(0:length(obj.DPD_Coeff)-1,imag(obj.DPD_Coeff));
+                  string = sprintf('%d Bits',pa.DAC.bits);
+                  title(string);
          %
          %          figure()
          %          plot(real(obj.correlation))
@@ -169,11 +171,15 @@ classdef SubBandDPD
          % Shift the PA output such that the IM3 frequency is at baseband
          PA_OutBlockShifted = PA_OutBlock.*exp(-2*pi*1i*(PA_In_StartIndx:PA_In_EndIndx).'*obj.normalizedFreqShift);
          
+         
          % IM3 Selection Filter to pick up the IM3 signal used for DPD learning
          IM3FilteredBlock = filter(IM3Filter,1,double(PA_OutBlockShifted));
          
          % Extract the IM3 block from the PA output in the feedback receiver
          ErrorBlock = IM3FilteredBlock(obj.loopDelay+1:obj.loopDelay+obj.learningBlockLength);
+         
+         % Here, we are RX the BB right on the spur. 
+         ErrorBlock = quantize(pa,ErrorBlock);
          
          %% Perform Correlation Calculation
          % Prepare block of data to be used for learning
