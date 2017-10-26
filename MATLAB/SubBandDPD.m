@@ -21,7 +21,7 @@ classdef SubBandDPD
    end
    
    methods
-      function obj = SubBandDPD(pa,signal,spur)
+      function obj = SubBandDPD(pa,signal,spur,mu)
          % Copy spur to object
          obj.spur = spur;
          
@@ -33,7 +33,7 @@ classdef SubBandDPD
          
          obj.learningBlockLength  = 1024;
          obj.filteringBlockLength = 1024;
-         obj.learningRateMu       = 1;
+         obj.learningRateMu       = mu;
          obj.nLearningSamples     = 18000*4;
          obj.alpha                = 0;
          obj.phaseshiftDPD        = 1;%(0.5403 - 0.8415*i);  %Need for WARP;
