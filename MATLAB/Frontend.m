@@ -15,11 +15,18 @@ classdef Frontend
       function out = broadcast(obj,in)
          out = zeros(length(in),1);
          out = broadcast(obj.PA, in);
-         maxreal = max(real(out));
-         maximag = max(imag(out));
-         MAX     = max(maxreal,maximag);
-         out = out / MAX; %Normalize to best use resolution
+         %maxreal = max(real(out));
+         %maximag = max(imag(out));
+         %MAX     = max(maxreal,maximag);
+         %out = out / MAX; %Normalize to best use resolution
          
+         %out = quantize(obj.DAC,out);
+      end
+      function out = quantize(obj,in)
+         maxreal = max(real(in));
+         maximag = max(imag(in));
+         MAX     = max(maxreal,maximag);
+         out = in / MAX; %Normalize to best use resolution          
          out = quantize(obj.DAC,out);
       end
    end
