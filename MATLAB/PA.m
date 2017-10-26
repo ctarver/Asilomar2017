@@ -7,12 +7,14 @@ classdef PA
       paParameters
       memory
       memorydepth
+      DAC
    end
    
    methods
       function obj = PA(order)
          obj.memory = 0;
          obj.order = order;
+         obj.DAC.bits = 64;
          if(obj.memory)
             obj.paParameters = [0.5823 - 0.0608i;
                1.1417 - 0.1198i;
@@ -72,6 +74,9 @@ classdef PA
                j = j + 1;
             end
          end
+      end
+      function out = quantize(obj,in)
+        out = in; %Hack so double still works.
       end
       
       
