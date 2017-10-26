@@ -7,12 +7,11 @@ function SystemMain()
 % *Add suppport for TX/RX on different freqs
 
 %% Data Source
-myLTE = LTE(1.4,'QPSK','uplink',200,-3e6);
-myLTE = newcomponentcarrier(myLTE,2,1.4,'QPSK',3e6);
+myLTE = LTE(5,'QPSK','uplink',200,-10e6);
 myLTE.sampleArray = LTE.normalizeSignal(myLTE.sampleArray);
 
 %% PA
-myPA = PA(9);     %Set up a PA
+myPA = PA(5);     %Set up a PA
 %myDAC = DAC(10,9);
 %myFrontend = Frontend(myPA,myDAC);
 %myPA = WARP(1); %Set up WARP board
