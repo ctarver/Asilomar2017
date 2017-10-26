@@ -15,7 +15,7 @@
 \usetheme{Basic} % See Section 5
 
 %% THEME STUFF %%
-\geometry{paperwidth=40in,paperheight=40in}
+\geometry{paperwidth=40in,paperheight=38.5in}
 \definecolor{riceblue}{RGB}{0,36,106}
 \definecolor{ricegray}{RGB}{94,96,98}
 %\titlegraphicheight{1mm}
@@ -24,7 +24,7 @@
 %Put logo at the side
 \definetitlestyle{sampletitle}{
 width=38in, roundedcorners=20, linewidth=2pt, innersep=5pt,
-titletotopverticalspace=15mm, titletoblockverticalspace=18mm,
+titletotopverticalspace=18mm, titletoblockverticalspace=19mm,
 titlegraphictotitledistance = 0pt
 }{
 \begin{scope}[line width=\titlelinewidth, rounded corners=\titleroundedcorners]
@@ -94,6 +94,7 @@ titlegraphictotitledistance = 0pt
 				      \item Carrier Aggregation (CA) in LTE-Advanced
 				      \item Cognitive radio
 				      \item 5G New Radio (NR) cellular
+				      \item Citizens Broadband Radio Service
 			      \end{itemize}
 			\item {\bf Non-contiguous carriers intermodulate}
 			      \begin{itemize}
@@ -115,7 +116,7 @@ titlegraphictotitledistance = 0pt
 					\item Larger area
 					\item More power
 				\end{itemize}			
-			\item{\textbf{\textit{ Need computationally and hardware efficient way to linearize for this scenario}}} 
+			\item{\textbf{\textit{Need computationally and hardware efficient way to linearize for this scenario}}} 
 			\end{itemize}}
 	%\block{Power Spectral Density}{
 		%\begin{tikzfigure}[\large Intermodulations when broadcasting more than 2 carriers.]
@@ -156,7 +157,7 @@ titlegraphictotitledistance = 0pt
 				      \item Reduce the power
 				      \item Reduce the cost
 				      \item Reduce the computational complexity by using shorter word lengths
-				      \item Increase sampling rates 
+				      \item Increase sampling rates to support DPD for larger BWs
 			      \end{itemize}
 		\end{itemize}
 	}
@@ -167,11 +168,14 @@ titlegraphictotitledistance = 0pt
 			\item {\bf LTE-Advanced CA Scenario}
 			\begin{itemize}
 				\item Two, 5 MHz component carriers
+				
+				\item Intraband CA with 20 MHz spacing
 				\item 5$^{th}$ order, parallel Hammerstein PA model
 				\item Fixed point toolbox to emulate ADC
 			\end{itemize}
 		\end{itemize}
 	}
+
 	\block{Full-band DPD Simulations}{\Large
 		\begin{itemize}
 			\item {\bf Simulation Architecture}
@@ -202,6 +206,7 @@ titlegraphictotitledistance = 0pt
 			\item[] {} %Empty item to allow the 
 			\begin{itemize}
 				\item {Near ideal performance for as low as 6 bits}
+				\item {Main carriers begin to saturate the ADC at low precisions} 
 			\end{itemize}
 		\end{itemize}	
 	}
@@ -241,7 +246,7 @@ titlegraphictotitledistance = 0pt
 		\begin{itemize}
 			\item {\bf Suppression Results:}
 		\end{itemize}
-		\vspace{-1in}	
+		\vspace{-1.1in}	
 		\begin{tikzfigure}[]
 			\label{fig:fig1}
 			\centering
@@ -286,7 +291,7 @@ titlegraphictotitledistance = 0pt
 
 	\block{Future Work}{\Large
 		\begin{itemize}
-			\item {\bf Computational complexity analysis}
+			%\item {\bf Computational complexity analysis}
 			\item {\bf Multi sub-band, single-bit DPD solution}
 			      %\begin{itemize}
 			      %    \item Use a variation of the sub-band DPD method to reduce in-band emission. 
