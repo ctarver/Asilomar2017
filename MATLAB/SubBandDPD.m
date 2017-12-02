@@ -31,10 +31,10 @@ classdef SubBandDPD
          % We'll set it up to loop from spur to maximum order. Change the
          % basis function depending on what has been done.
          
-         obj.learningBlockLength  = 1024;
-         obj.filteringBlockLength = 1024;
+         obj.learningBlockLength  = 1024*2;
+         obj.filteringBlockLength = 1024*2;
          obj.learningRateMu       = mu;
-         obj.nLearningSamples     = 18000*4;
+         obj.nLearningSamples     = 18000*8;
          obj.alpha                = 0;
          obj.phaseshiftDPD        = 1;%(0.5403 - 0.8415*i);  %Need for WARP;
          
