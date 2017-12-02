@@ -38,7 +38,7 @@ classdef WARP  < handle
          obj.dc.imag = -0.005;
          
          %Defaults till we compute
-         obj.synchronization.delay = 45;
+         obj.synchronization.delay = 40;
          obj.synchronization.phase = 0;
          obj.synchronization.done  = 0;
          
