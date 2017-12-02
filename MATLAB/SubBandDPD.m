@@ -188,7 +188,7 @@ classdef SubBandDPD
          LMS_InputBlock = obj.lmsSignal(LMS_In_StartIndx:LMS_In_EndIndx).';
          
          % Correlation between filter input and error block
-         MeanCorrelation = LMS_InputBlock*conj(ErrorBlock)/norm(LMS_InputBlock);
+         MeanCorrelation = LMS_InputBlock*conj(ErrorBlock);%/(norm(LMS_InputBlock)+1);  
          MeanCorrelation = MeanCorrelation * obj.phaseshiftDPD;  %Constant shift for this freq on WARP
          
          obj.correlation(dpdBlockIndx,:) = MeanCorrelation;
