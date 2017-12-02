@@ -17,9 +17,15 @@ classdef DAC
       end
       function out = quantize(obj,signal)
          if obj.bits == 1
-            signal(signal>=0) = 0.5;
-            signal(signal<0)  = -0.5;
-            x = signal;
+           real_signal = real(signal);
+           imag_signal = imag(signal);
+           %real
+            real_signal(real_signal>=0) = 0.5;
+            real_signal(real_signal<0)  = -0.5;
+            %imag
+            imag_signal(imag_signal>=0) = 0.5;
+            imag_signal(imag_signal<0)  = -0.5;
+            x = real_signal+imag_signal*1i;
          else
             x = fi(signal,1,obj.bits,obj.fractional);
          end
