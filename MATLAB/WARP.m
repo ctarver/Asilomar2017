@@ -34,8 +34,8 @@ classdef WARP  < handle
          obj.filters.TX_LPF  = 1;  % [1,2,3] for approx [12,18,24]MHz corner frequencies ([24,36,48]MHz bandwidths)
          
          %DC offset
-         obj.dc.real = 0.0210;
-         obj.dc.imag =  - 0.0110;
+         obj.dc.real = 0.0220;
+         obj.dc.imag = -0.005;
          
          %Defaults till we compute
          obj.synchronization.delay = 45;
