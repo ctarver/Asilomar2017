@@ -28,6 +28,7 @@ classdef Frontend
          MAX     = max(maxreal,maximag);
          out = in / MAX; %Normalize to best use resolution          
          out = quantize(obj.DAC,out);
+         out = out * MAX; %Set back to original scaling for better LMS performance
       end
    end
    
