@@ -23,8 +23,8 @@ classdef Frontend
          %out = quantize(obj.DAC,out);
       end
       function out = quantize(obj,in)
-         maxreal = max(real(in));
-         maximag = max(imag(in));
+         maxreal = max(abs(real(in)));
+         maximag = max(abs(imag(in)));
          MAX     = max(maxreal,maximag);
          out = in / MAX; %Normalize to best use resolution          
          out = quantize(obj.DAC,out);
