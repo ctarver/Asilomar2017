@@ -39,12 +39,12 @@ classdef PA
             obj.memorydepth = 4;
          else
             obj.paParameters = [0.9512 - 0.0946i;
-               2*(0.239 + 0.1632i);
-               2*(0.082 - 0.0727i);
-               -0.016 + 0.0147i;
-               -0.0001 - 0.0011i];
+                          4*(0.0239 + 0.1632i);
+                          16*(0.0082 - 0.0727i);
+                         16*(-0.0016 + 0.0147i);
+                         8*(-0.0001 - 0.0011i)];
          end
-         obj.paParameters = obj.paParameters*2;
+         obj.paParameters = obj.paParameters;
       end
       function out = broadcast(obj,in)
          if(obj.memory)

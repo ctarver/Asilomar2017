@@ -7,6 +7,7 @@ classdef LTE
       direction
       nSymbols
       sampleArray
+      signalWithDPD
    end
    
    methods
@@ -26,6 +27,7 @@ classdef LTE
          n   = 1:length(obj.CCs.CC1.signalArray);
          obj.sampleArray = obj.CCs.CC1.signalArray...
             .*exp(2*pi*1j*n*f/obj.CCs.CC1.systemFs).';
+
       end
       
       function obj = newcomponentcarrier(obj,index,bw,modulation,f)
@@ -77,7 +79,7 @@ classdef LTE
          
          % Upsampling for pulse shaping and possible Non-linearity modeling
          obj.CCs.(indexStr).upsamplingFactor = 21;%...
-            %ceil(20*bw*1e6/samplingFrequency);
+         %ceil(20*bw*1e6/samplingFrequency);
          
          %Define the sampling rate
          obj.CCs.(indexStr).systemFs = ...
@@ -141,9 +143,8 @@ classdef LTE
       end
    end
    methods(Static)
-      function out = normalizeSignal(in)
-         normalizedmax = 1;
-         maxValue = max(max(real(in)),max(imag(in)));
+      function out = normalizeSignal(in,normalizedmax)
+         maxValue = max(max(abs(real(in))),max(abs(imag(in))));
          out = normalizedmax * maxValue^-1 .* in;
       end
       function alphabet = qamAlphabet(ModulationType)
@@ -192,7 +193,7 @@ classdef LTE
       function f = plot_freqdomain(Rx_Signal,fs,colour,TITLE,POWER_PLOT_1MHZ,PA_Power_Measured)
          if nargin == 4
             POWER_PLOT_1MHZ = 0;
-            PA_Power_Measured = 23;
+            PA_Power_Measured = 20;
          end
          if nargin == 1
             fs = 28800000;
@@ -238,10 +239,10 @@ classdef LTE
             [pxx,f] = pwelch(Rx_Signal,500,300,500,fs,'centered','power');
             plot(f/10^6,10*log10(pxx),'DisplayName',TITLE);
             xlabel('Frequency (MHz)')
-            ylabel('Magnitude (dB)')
+            ylabel('Power (dBm)')
             grid on;
             hold on;
-            axis([f(1)/10^6 f(end)/10^6 -inf inf])
+            %axis([f(1)/10^6+2 f(end)/10^6-2 -inf inf])
          end
       end
    end

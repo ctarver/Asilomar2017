@@ -15,18 +15,20 @@ classdef WARP  < handle
       filters
       synchronization
       dc
+      DAC
    end
    
    methods
       function obj = WARP(N)
          USE_AGC = false;        % Use the AGC if running on WARP hardware
+         obj.DAC.bits = 12;      
          
          % RX variables
          obj.channels.RX        = 6;
          obj.gains.RxGainRF     = 2;  % Rx RF Gain in [1:3] (ignored if USE_AGC is true)
          obj.gains.RxGainBB     = 13; % Rx Baseband Gain in [0:31] (ignored if USE_AGC is true)
          obj.filters.RX_LPF     = 3;  % [0,1,2,3] for approx ![7.5,9.5,14,18]MHz corner
-         obj.filters.RX_LPFFine = 1;  % Must be integer in [0,1,2,3,4,5] for [90,95,100,105,110]% scaling to LPF corner frequency     
+         obj.filters.RX_LPFFine = 1;  % Must be integer in [0,1,2,3,4,5] for [90,95,100,105,110]% scaling to LPF corner frequency
          obj.filters.RX_HPF     = 1;  % Must be 0 (HPF corner of 100 Hz) or 1 (default; HPF corner of 30 kHz) This filter setting is only used when RXHP is 'disable' (ie 0)
          obj.filters.RX_HP      = 'disable';  % (boolean MODE) MODE: true enables RXHP on the node when in manual gain control false disables RXHP on the node when in manual gain control
          
@@ -62,12 +64,12 @@ classdef WARP  < handle
          wl_interfaceCmd(obj.nodes, obj.ifc_ids.RF_B, 'channel', 2.4, obj.channels.RX);
          
          %Set Filter Settings
-         wl_interfaceCmd(obj.nodes, obj.ifc_ids.RF_ALL, 'rx_lpf_corn_freq', obj.filters.RX_LPF);         
+         wl_interfaceCmd(obj.nodes, obj.ifc_ids.RF_ALL, 'rx_lpf_corn_freq', obj.filters.RX_LPF);
          wl_interfaceCmd(obj.nodes, obj.ifc_ids.RF_ALL, 'rx_lpf_corn_freq_fine', obj.filters.RX_LPFFine);
          wl_interfaceCmd(obj.nodes, obj.ifc_ids.RF_ALL, 'rx_hpf_corn_freq', obj.filters.RX_HPF);
-         wl_interfaceCmd(obj.nodes, obj.ifc_ids.RF_ALL, 'rx_rxhp', obj.filters.RX_HP);    
+         wl_interfaceCmd(obj.nodes, obj.ifc_ids.RF_ALL, 'rx_rxhp', obj.filters.RX_HP);
          wl_interfaceCmd(obj.nodes, obj.ifc_ids.RF_ALL, 'tx_lpf_corn_freq', obj.filters.TX_LPF);
-                  
+         
          %Set Gain Settings
          wl_interfaceCmd(obj.nodes, obj.ifc_ids.RF_ALL, 'rx_gain_mode', 'manual');
          wl_interfaceCmd(obj.nodes, obj.ifc_ids.RF_ALL, 'rx_gains', ...
@@ -404,6 +406,9 @@ classdef WARP  < handle
          obj.synchronization.phase = coeff;
          obj.synchronization.delay = obj.synchronization.delay + round(delay);
          
+      end
+      function out = quantize(obj,in)
+         out = in; %Hack so double still works.
       end
    end
 end

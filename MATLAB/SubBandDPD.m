@@ -8,6 +8,7 @@ classdef SubBandDPD
       learningRateMu
       nLearningSamples
       spur
+      order
       dpdFreq
       feedbackFilter
       lmsSignal
@@ -21,9 +22,10 @@ classdef SubBandDPD
    end
    
    methods
-      function obj = SubBandDPD(pa,signal,spur,mu)
+      function obj = SubBandDPD(pa,signal,spur,order,mu)
          % Copy spur to object
-         obj.spur = spur;
+         obj.spur  = spur;
+         obj.order = order;
          
          % Use signal and spur to calculate the freq of the spur
          obj = getDPDFreq(obj,signal);
@@ -31,11 +33,11 @@ classdef SubBandDPD
          % We'll set it up to loop from spur to maximum order. Change the
          % basis function depending on what has been done.
          
-         obj.learningBlockLength  = 1024*2;
-         obj.filteringBlockLength = 1024*2;
+         obj.learningBlockLength  = 1024;
+         obj.filteringBlockLength = 1024;
          obj.learningRateMu       = mu;
-         obj.nLearningSamples     = 18000*8;
-         obj.alpha                = 0;
+         obj.nLearningSamples     = 18000*12;
+         obj.alpha                = [0,0];
          obj.phaseshiftDPD        = 1;%(0.5403 - 0.8415*i);  %Need for WARP;
          
          % Set up filter
@@ -69,7 +71,16 @@ classdef SubBandDPD
          
          switch obj.spur
             case 'IM3+'
-               obj.lmsSignal =  conj(CC1).*(CC2.^2);
+               switch obj.order
+                  case 3
+                     obj.lmsSignal =  conj(CC1).*(CC2.^2);
+                  case 5
+                     u3 = conj(CC1).*(CC2.^2);
+                     u5 =  u3.*(2*abs(CC2).^2 + 3*abs(CC1).^2);
+                     IM3_Basis_5th = [u3 u5];
+                     [Q,~]= qr(IM3_Basis_5th,0);
+                     obj.lmsSignal = Q.';
+               end
             case 'IM3-'
                obj.lmsSignal  =  conj(CC1).*(CC2.^2);
             case 'IM5+'
@@ -99,7 +110,7 @@ classdef SubBandDPD
       function obj = performDpdLearning(obj,pa,signal)
          %Set some things up
          dpdBlockIndx = 0;
-         obj.DPD_Coeff(1) = obj.alpha;
+         obj.DPD_Coeff(1,:) = obj.alpha;
          obj.normalizedFreqShift = (obj.dpdFreq)/signal.CCs.CC1.systemFs;
          
          if obj.nLearningSamples > length(obj.lmsSignal)
@@ -108,14 +119,14 @@ classdef SubBandDPD
          
          for sample = 1:obj.filteringBlockLength:obj.nLearningSamples
             dpdBlockIndx    = dpdBlockIndx + 1;
-            obj = processBlock(obj,signal,pa,sample,dpdBlockIndx);
+            obj = processBlock(obj,signal,pa,sample,dpdBlockIndx,1);
          end
-                  figure();
-                  plot(0:length(obj.DPD_Coeff)-1,abs(obj.DPD_Coeff));
-                  %hold on
-                  %plot(0:length(obj.DPD_Coeff)-1,imag(obj.DPD_Coeff));
-                  string = sprintf('%d Bits',pa.DAC.bits);
-                  title(string);
+         figure();
+         plot(0:length(obj.DPD_Coeff)-1,real(obj.DPD_Coeff));
+         hold on
+         plot(0:length(obj.DPD_Coeff)-1,imag(obj.DPD_Coeff));
+         string = sprintf('%d Bits',pa.DAC.bits);
+         title(string);
          %
          %          figure()
          %          plot(real(obj.correlation))
@@ -137,30 +148,30 @@ classdef SubBandDPD
             dpdBlockIndx    = dpdBlockIndx + 1;
             obj = processBlock2(obj,signal,pa,sample,dpdBlockIndx);
          end
-                  figure();
-                  plot(0:length(obj.DPD_Coeff)-1,real(obj.DPD_Coeff));
-                  hold on
-                  plot(0:length(obj.DPD_Coeff)-1,imag(obj.DPD_Coeff));
+         figure();
+         plot(0:length(obj.DPD_Coeff)-1,real(obj.DPD_Coeff));
+         hold on
+         plot(0:length(obj.DPD_Coeff)-1,imag(obj.DPD_Coeff));
          
-                  figure()
-                  plot(real(obj.correlation))
-                  hold on
-                  plot(imag(obj.correlation))
+         figure()
+         plot(real(obj.correlation))
+         hold on
+         plot(imag(obj.correlation))
          
       end
       
-      function [obj,dpdBlockIndx]  = processBlock(obj,signal,pa,sample,dpdBlockIndx)
+      function [obj,dpdBlockIndx]  = processBlock(obj,signal,pa,sample,dpdBlockIndx,row)
          IM3Filter    = obj.feedbackFilter; %filter function prefers this
          PA_In_StartIndx = sample;
          PA_In_EndIndx   = sample + ...
             obj.filteringBlockLength + obj.loopDelay - 1;
          
          % Apply LMS block filtering
-         LMS_FilteringBlock = obj.lmsSignal(PA_In_StartIndx:PA_In_EndIndx);
-         dpdSignal = (obj.alpha*LMS_FilteringBlock);
+         LMS_FilteringBlock = transpose(obj.lmsSignal(PA_In_StartIndx:PA_In_EndIndx,:));
+         dpdSignal = transpose((obj.alpha*LMS_FilteringBlock));
          
          % Add the LMS filter output to the PA input
-         signalInput = signal.sampleArray(PA_In_StartIndx:PA_In_EndIndx);
+         signalInput = signal.signalWithDPD(PA_In_StartIndx:PA_In_EndIndx);
          PA_InBlock = signalInput ...
             + dpdSignal.*exp(2*pi*1i*(PA_In_StartIndx:PA_In_EndIndx).'* obj.normalizedFreqShift);
          
@@ -171,24 +182,23 @@ classdef SubBandDPD
          % Shift the PA output such that the IM3 frequency is at baseband
          PA_OutBlockShifted = PA_OutBlock.*exp(-2*pi*1i*(PA_In_StartIndx:PA_In_EndIndx).'*obj.normalizedFreqShift);
          
-         
          % IM3 Selection Filter to pick up the IM3 signal used for DPD learning
          IM3FilteredBlock = filter(IM3Filter,1,double(PA_OutBlockShifted));
          
          % Extract the IM3 block from the PA output in the feedback receiver
          ErrorBlock = IM3FilteredBlock(obj.loopDelay+1:obj.loopDelay+obj.learningBlockLength);
          
-         % Here, we are RX the BB right on the spur. 
+         % Here, we are RX the BB right on the spur.
          ErrorBlock = quantize(pa,ErrorBlock);
          
          %% Perform Correlation Calculation
          % Prepare block of data to be used for learning
          LMS_In_StartIndx = sample;
          LMS_In_EndIndx = LMS_In_StartIndx + obj.learningBlockLength - 1;
-         LMS_InputBlock = obj.lmsSignal(LMS_In_StartIndx:LMS_In_EndIndx).';
+         LMS_InputBlock = obj.lmsSignal(LMS_In_StartIndx:LMS_In_EndIndx,:).';
          
          % Correlation between filter input and error block
-         MeanCorrelation = LMS_InputBlock*conj(ErrorBlock);%/(norm(LMS_InputBlock)+1);  
+         MeanCorrelation = LMS_InputBlock*conj(ErrorBlock)/(norm(LMS_InputBlock)+1);
          MeanCorrelation = MeanCorrelation * obj.phaseshiftDPD;  %Constant shift for this freq on WARP
          
          obj.correlation(dpdBlockIndx,:) = MeanCorrelation;
@@ -205,7 +215,7 @@ classdef SubBandDPD
       function out = applyDPDtoSignal(obj,in)
          dpdSignal = conv(obj.alpha,obj.lmsSignal); %Baseband centered DPD
          dpdSignal = dpdSignal .*exp(2*pi*1i*(1:length(dpdSignal)).'* obj.normalizedFreqShift);
-         out = in.sampleArray + dpdSignal;
+         out = in.signalWithDPD + dpdSignal;
       end
       function out = IM3Power(obj,Rx_Signal,fs)
          PA_Power_Measured = 23;
@@ -247,7 +257,7 @@ classdef SubBandDPD
          r_signal(r_signal>=0) = 0.5;
          r_signal(r_signal<0)  = -0.5;
          i_signal(i_signal>=0) = 0.5;
-         i_signal(i_signal<0)  = -0.5;         
+         i_signal(i_signal<0)  = -0.5;
          IM3FilteredBlock = r_signal + j*i_signal;
          
          % Extract the IM3 block from the PA output in the feedback receiver
