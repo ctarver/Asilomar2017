@@ -1,0 +1,269 @@
+\documentclass[25pt]{tikzposter} % See Section 3
+%25pt,margin=0mm,innermargin=15mm
+\usepackage{amsmath,graphicx}
+\newcommand{\hsc}[1]{{\LARGE\MakeUppercase{#1}}}
+\newcommand{\hsct}[1]{{\Large\MakeUppercase{#1}}}
+
+%\makeatletter
+%\input{theguy28pt.clo}
+%\makeatother
+
+\title{\bf Digital Predistortion with Low Precision ADCs} 
+\institute{Rice University} % See Section 4.1
+%\titlegraphic{\includegraphics[width=5in]{Rice_logo_hi_res.png}}
+\author{Chance Tarver and Joseph R. Cavallaro} 
+\usetheme{Basic} % See Section 5
+
+%% THEME STUFF %%
+\geometry{paperwidth=42in,paperheight=42in}
+\definecolor{riceblue}{RGB}{0,36,106}
+\definecolor{ricegray}{RGB}{94,96,98}
+%\titlegraphicheight{1mm}
+\tikzposterlatexaffectionproofoff  %Turn off watermark thing in corner
+
+%Put logo at the side
+\definetitlestyle{sampletitle}{
+width=40in, roundedcorners=20, linewidth=2pt, innersep=5pt,
+titletotopverticalspace=15mm, titletoblockverticalspace=18mm,
+titlegraphictotitledistance = 0pt
+}{
+\begin{scope}[line width=\titlelinewidth, rounded corners=\titleroundedcorners]
+\draw[color=blocktitlebgcolor, fill=titlebgcolor]
+(\titleposleft,\titleposbottom) rectangle (\titleposright,\titlepostop);
+\end{scope}
+}
+
+ \usetitlestyle{sampletitle}
+%Recalculate the size of the textwidth
+\makeatletter
+\setlength{\TP@visibletextwidth}{\textwidth-2\TP@innermargin}
+\setlength{\TP@visibletextheight}{\textheight-2\TP@innermargin}
+\makeatother
+
+%Set the colors
+\colorlet{backgroundcolor}{riceblue}
+\colorlet{framecolor}{black}
+\colorlet{blocktitlebgcolor}{ricegray} %<---- change color
+\colorlet{titlebgcolor}{white}
+\colorlet{titlefgcolor}{black}  %Title font color
+\colorlet{notebgcolor}{ricegray}
+\colorlet{notefgcolor}{white}
+\colorlet{noteframecolor}{black}
+
+\makeatletter
+\usepackage{helvet}
+\renewcommand*{\familydefault}{\sfdefault}% Let's have a sans serif font - See more at: http://latex-cookbook.net/cookbook/examples/poster/#sthash.jDLWH62B.dpuf
+\renewcommand\TP@maketitle{%
+  \centering
+   \begin{minipage}[b]{1\linewidth}
+        \centering
+        \vspace*{1em}
+        \color{black} %color of letters
+        {\bfseries \Huge \sc \@title \par}
+        \vspace*{1em}
+        {\huge \@author \par}
+        \vspace*{1em}
+        {\LARGE \@institute}
+    \end{minipage}%
+     \tikz[overlay]\node[scale=1,anchor=east,xshift=16in,yshift=1.5in,inner sep=0pt] {%
+       \includegraphics[width=6in]{ECE}
+          }; 
+      \tikz[overlay]\node[scale=1,anchor=east,xshift=4.4in,yshift=1.6in,inner sep=0pt] {%
+       \includegraphics[width=6in]{Rice_logo_hi_res.png}       
+   };   
+}
+\makeatother
+\makeatletter
+\input{theguy30pt.clo}
+\makeatother
+
+\begin{document}
+
+
+\maketitle % See Section 4.1
+
+\begin{columns} % See Section 4.4
+\centering
+\column{0.33} % See Section 4.4
+\block{Motivation}
+{    \Large
+\begin{itemize}
+     \item {\bf Spectrum Scarcity $\rightarrow$ Frequency Agile Standards}
+            \begin{itemize}
+                \item Non-contiguous Transmission
+                \item Carrier Aggregation (CA) in LTE-Advanced
+                \item Cognitive Radio
+                \item 5G Cellular
+            \end{itemize}
+        \item {\bf Non-contiguous carriers intermodulate}
+        \begin{itemize}
+            \item Caused by nonlinearities in power amplifiers (PAs)
+            \item Undesired spurious emissions (spurs)
+            \item Could interfere with nearby channels
+            \item Self-interference to own receiver when using FDD
+            %frequency-division duplexing
+        \end{itemize}
+        \item{\bf Current 4G chipsets support up to 4 carriers}
+            \begin{itemize}
+                \item Snapdragon 835
+                \item 4x20 MHz carrier aggregation downlink, 2x20 MHz uplink
+            \end{itemize}
+            \vspace{1mm}
+        \item{\textbf{\textit{ Need efficient way to linearize for this scenario}}}
+        \item{\textbf{\textit{ DPD requires extra hardware}}}
+        	\begin{itemize}
+        		\item Extra RX chains
+        		\item Larger area 
+        		\item More Power
+        	\end{itemize}
+     \end{itemize}  }
+     \block{Power Spectral Density}{
+%\begin{tikzfigure}[\large Intermodulations when broadcasting more than 2 carriers.]
+%\label{fig:fig1}
+%\includegraphics[width=0.95\linewidth]{SubBandIM3s2}
+%\end{tikzfigure}
+}   
+%\block{Related Works}{
+%\Large
+%    \begin{itemize}
+%        \item {\bf Reduce Power}
+%            \begin{itemize}
+%                \item Operate in a more linear PA region
+%                \item Less range and less power efficient
+%            \end{itemize} 
+%                        \vspace{1mm}
+%        \item {\bf Full-Band Digital Predistortion (DPD)}
+%            \begin{itemize}
+%                \item Computationally expensive
+%                \item Does not scale for noncontiguous carriers
+%                \item Requires large sampling rate as carrier spacing grows
+%            \end{itemize}  
+%                        \vspace{1mm}
+%        \item {\bf Sub-Band DPD}
+%            \begin{itemize}
+%                \item Previously explored by the authors with the WARP SDR RF Board
+%                \item Observes and applies DPD to individual spurs
+%                \item Can reduce the necessary sampling rate and complexity
+%                \item Has only been considered for 2 carriers           
+%            \end{itemize}                 
+%    \end{itemize}
+%}
+\block{Main Idea}{\Large
+\begin{itemize}
+    \item {\bf Use a lower precision ADC to reduce the area and cost for applying DPD on a UE device}
+        \begin{itemize}
+            \item Iteratively learn coefficients as necessary using adaptive, LMS algorithm.
+            \item Apply them as in Equation 5 to reduce spurious emissions.
+        \end{itemize}
+\end{itemize}
+}        
+     
+\block{M\hsct{atlab} Simulation}{\Large
+	\begin{itemize}
+		\item {\bf LTE-Advanced CA Scenario}
+		\begin{itemize}
+			\item Two, 5 MHz CCs
+			\item Bandpass filter around passpand on the RF Frontend
+			\item Only one spurious region is in violation of the emission limits 
+		\end{itemize}
+	\end{itemize}     
+}
+\column{0.33}
+\block{Full-band DPD Simulations}{\Large
+\begin{itemize}
+	\item {\bf Simulation Architecture}
+\end{itemize}
+	
+\begin{tikzfigure}[]
+	\label{fig:fig1}
+	\centering
+	\includegraphics[width=12in]{../TEX/FullBandIndirect.pdf}
+\end{tikzfigure}
+
+\begin{itemize}
+	\item[] {} %Empty item to allow the 
+	\begin{itemize}
+		\item {\textsc{Matlab} simulation}
+		\item {9th order Parallel Hammerstein PA model}
+	\end{itemize}
+\end{itemize}
+
+\begin{tikzfigure}[]
+	\label{fig:fig1}
+	\centering
+	\includegraphics[width=12in]{../TEX/FullBandPSD.pdf}
+\end{tikzfigure}
+
+}
+
+
+
+%\begin{tikzfigure}[]
+%\label{fig:fig1}
+%\centering
+%\includegraphics[]{filename2}
+%\end{tikzfigure}
+
+%\begin{tikzfigure}[]
+%\label{fig:fig1}
+%\includegraphics[]{filename}
+%\end{tikzfigure}
+
+
+\column{0.33}
+\block{Sub-band DPD Simulations}{\Large
+\begin{tikzfigure}[]
+	\label{fig:fig1}
+	\centering
+	\includegraphics[width=12in]{../TEX/SubBand.pdf}
+\end{tikzfigure}
+\begin{tikzfigure}[]
+	\label{fig:fig1}
+	\centering
+	\includegraphics[width=12in]{../TEX/SubBandPSD.pdf}
+\end{tikzfigure}
+}
+
+\block{G\hsct{nu}Radio Simulator}{\Large
+%\begin{itemize}
+    %\item {\bf GNURadio}
+    %\begin{itemize}
+        %\item Software defined radio (SDR) development platform
+        %\item Can work with SDR boards such as the USRP
+        %\item Efficient, parallel, real-time CPU implementation 
+        %\item Uses python and C++ for easy development and performance 
+    %\end{itemize}
+    %\vspace{1mm}
+%\item{\bf DPD Simulator}
+    %\begin{itemize}
+        %\item Custom GNURadio flowgraph, modules, and blocks for performing DPD
+        %\item Movable component carriers
+        %\item Changeable PA model
+        %\item Can add and remove DPD processing
+    %\end{itemize}
+%    \begin{tikzfigure}
+%\includegraphics[width=0.98\linewidth]{gnu.png}
+%\end{tikzfigure}
+
+%\end{itemize}
+}
+%\note[targetoffsetx=0.5in,targetoffsety=-5.5in,width = 6in,connection,rotate=2]{\bf Can change carrier magnitude and placment, PA model, and DPD application dynamically.}
+
+
+
+\block{Future Work}{\Large
+\begin{itemize}
+    \item {\bf Main carrier linearization}
+    %\begin{itemize}
+    %    \item Use a variation of the sub-band DPD method to reduce in-band emission. 
+    %\end{itemize}
+    \item {\bf Hardware testing with a real PA using the \textsc{Warp} SDR platform}
+    %\begin{itemize}
+    %    \item USRP SDR RF Board
+    %    \item Off-the-shelf, external PAs
+    %\end{itemize}
+\end{itemize}
+}
+
+\end{columns}
+\end{document}
