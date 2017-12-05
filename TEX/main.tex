@@ -52,6 +52,7 @@
 
 
 \documentclass[conference]{IEEEtran}
+ \IEEEoverridecommandlockouts
 % Some Computer Society conferences also require the compsoc mode option,
 % but others use the standard conference format.
 %
@@ -319,7 +320,6 @@
 % is locked out in conference mode. If really needed, such as for
 % the acknowledgment of grants, issue a \IEEEoverridecommandlockouts
 % after \documentclass
-
 % for over three affiliations, or if they all won't fit within the width
 % of the page, use this alternative format:
 % 
@@ -329,7 +329,10 @@ Chance Tarver \ and \
 Joseph R. Cavallaro}
 \IEEEauthorblockA{
 Department of Electrical and Computer Engineering, 
-Rice University, Houston, TX \\ Email: tarver@rice.edu  cavallar@rice.edu}}
+Rice University, Houston, TX \\ Email: tarver@rice.edu  cavallar@rice.edu}
+	\thanks{This work was supported in part
+	by the US National Science Foundation under grants ECCS-1408370, ECCS-
+	1232274, CNS-1265332, and CNS-1717218 in the WiFiUS program.}}
 
 
 
@@ -346,6 +349,7 @@ Digital Predistortion (DPD) is a popular technique for linearizing a power ampli
 We study this trade-off to try to find how much precision is needed in DPD systems and discover that for a full-band DPD as few as 6 bits can reliably be used. 
 For sub-band DPD, a single bit ADC can be used. 
 \end{abstract}
+
 
 % no keywords
 
