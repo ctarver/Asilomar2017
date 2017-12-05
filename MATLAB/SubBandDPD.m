@@ -22,7 +22,7 @@ classdef SubBandDPD
    end
    
    methods
-      function obj = SubBandDPD(pa,signal,spur,order,mu)
+      function obj = SubBandDPD(pa,signal,spur,order,mu,phaseshiftDPD)
          % Copy spur to object
          obj.spur  = spur;
          obj.order = order;
@@ -36,15 +36,15 @@ classdef SubBandDPD
          obj.learningBlockLength  = 1024;
          obj.filteringBlockLength = 1024;
          obj.learningRateMu       = mu;
-         obj.nLearningSamples     = 18000*12;
-         obj.alpha                = [0,0];
-         obj.phaseshiftDPD        = 1;%(0.5403 - 0.8415*i);  %Need for WARP;
+         obj.nLearningSamples     = 18000*60;
+         obj.phaseshiftDPD        = phaseshiftDPD;%(0.5403 - 0.8415*i);  %Need for WARP;
          
          % Set up filter
          obj = makeFeedbackFilter(obj,signal);
          
          %Calculate the LMS basis function
          obj = getLMSBasis(obj,signal);
+         obj.alpha = zeros(1,length(obj.lmsSignal(:,1)));
          
          % Go perform learning.
          obj = performDpdLearning(obj,pa,signal);
@@ -73,13 +73,15 @@ classdef SubBandDPD
             case 'IM3+'
                switch obj.order
                   case 3
-                     obj.lmsSignal =  conj(CC1).*(CC2.^2);
+                     obj.lmsSignal =  (conj(CC1).*(CC2.^2)).';
                   case 5
                      u3 = conj(CC1).*(CC2.^2);
                      u5 =  u3.*(2*abs(CC2).^2 + 3*abs(CC1).^2);
-                     IM3_Basis_5th = [u3 u5];
-                     [Q,~]= qr(IM3_Basis_5th,0);
-                     obj.lmsSignal = Q.';
+                     u5_ortho = u5 - dot(u3,u5)*u3/(norm(u3)^2);
+                     IM3_Basis_5th = [u3 u5_ortho];
+                     %[Q,~]= qr(IM3_Basis_5th,0);  %Need to make back to
+                     %original norm instead of unit
+                     obj.lmsSignal = IM3_Basis_5th.';
                end
             case 'IM3-'
                obj.lmsSignal  =  conj(CC1).*(CC2.^2);
@@ -122,9 +124,9 @@ classdef SubBandDPD
             obj = processBlock(obj,signal,pa,sample,dpdBlockIndx,1);
          end
          figure();
-         plot(0:length(obj.DPD_Coeff)-1,real(obj.DPD_Coeff));
-         hold on
-         plot(0:length(obj.DPD_Coeff)-1,imag(obj.DPD_Coeff));
+         plot(0:length(obj.DPD_Coeff)-1,abs(obj.DPD_Coeff));
+         %hold on
+         %plot(0:length(obj.DPD_Coeff)-1,imag(obj.DPD_Coeff));
          string = sprintf('%d Bits',pa.DAC.bits);
          title(string);
          %
@@ -167,11 +169,11 @@ classdef SubBandDPD
             obj.filteringBlockLength + obj.loopDelay - 1;
          
          % Apply LMS block filtering
-         LMS_FilteringBlock = transpose(obj.lmsSignal(PA_In_StartIndx:PA_In_EndIndx,:));
+         LMS_FilteringBlock = obj.lmsSignal(:,PA_In_StartIndx:PA_In_EndIndx);
          dpdSignal = transpose((obj.alpha*LMS_FilteringBlock));
          
          % Add the LMS filter output to the PA input
-         signalInput = signal.signalWithDPD(PA_In_StartIndx:PA_In_EndIndx);
+         signalInput = signal.sampleArray(PA_In_StartIndx:PA_In_EndIndx);
          PA_InBlock = signalInput ...
             + dpdSignal.*exp(2*pi*1i*(PA_In_StartIndx:PA_In_EndIndx).'* obj.normalizedFreqShift);
          
@@ -187,18 +189,22 @@ classdef SubBandDPD
          
          % Extract the IM3 block from the PA output in the feedback receiver
          ErrorBlock = IM3FilteredBlock(obj.loopDelay+1:obj.loopDelay+obj.learningBlockLength);
-         
+         norm1 = norm(ErrorBlock);
          % Here, we are RX the BB right on the spur.
-         ErrorBlock = quantize(pa,ErrorBlock);
+         ErrorBlock = quantize(pa,ErrorBlock);  %Get back to the original norm of the error block for better LMS
+         change = norm(ErrorBlock)/norm1;
+         ErrorBlock = ErrorBlock/change;
          
          %% Perform Correlation Calculation
          % Prepare block of data to be used for learning
          LMS_In_StartIndx = sample;
          LMS_In_EndIndx = LMS_In_StartIndx + obj.learningBlockLength - 1;
-         LMS_InputBlock = obj.lmsSignal(LMS_In_StartIndx:LMS_In_EndIndx,:).';
+         LMS_InputBlock = obj.lmsSignal(:,LMS_In_StartIndx:LMS_In_EndIndx);
          
          % Correlation between filter input and error block
-         MeanCorrelation = LMS_InputBlock*conj(ErrorBlock)/(norm(LMS_InputBlock)+1);
+         for i = 1:length(obj.alpha)
+            MeanCorrelation(i,1) = LMS_InputBlock(i,:)*conj(ErrorBlock)/(norm(LMS_InputBlock(i,:))+0.25); %Coould do in one step, but not with a custom norm for each row. 
+         end
          MeanCorrelation = MeanCorrelation * obj.phaseshiftDPD;  %Constant shift for this freq on WARP
          
          obj.correlation(dpdBlockIndx,:) = MeanCorrelation;
@@ -213,9 +219,9 @@ classdef SubBandDPD
       
       
       function out = applyDPDtoSignal(obj,in)
-         dpdSignal = conv(obj.alpha,obj.lmsSignal); %Baseband centered DPD
+         dpdSignal = (obj.alpha*obj.lmsSignal).'; %Baseband centered DPD
          dpdSignal = dpdSignal .*exp(2*pi*1i*(1:length(dpdSignal)).'* obj.normalizedFreqShift);
-         out = in.signalWithDPD + dpdSignal;
+         out = in.sampleArray + dpdSignal;
       end
       function out = IM3Power(obj,Rx_Signal,fs)
          PA_Power_Measured = 23;

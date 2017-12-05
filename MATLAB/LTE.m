@@ -190,19 +190,19 @@ classdef LTE
                error('Not Valid Bandwidth!');
          end
       end
-      function f = plot_freqdomain(Rx_Signal,fs,colour,TITLE,POWER_PLOT_1MHZ,PA_Power_Measured)
-         if nargin == 4
-            POWER_PLOT_1MHZ = 0;
-            PA_Power_Measured = 20;
-         end
-         if nargin == 1
-            fs = 28800000;
-            colour = 'k';
-            TITLE = '';
+      function f = plot_freqdomain(Rx_Signal,fs,colour,TITLE,figurenum)
+         %if nargin == 4
             POWER_PLOT_1MHZ = 0;
             PA_Power_Measured = 23;
-         end
-         figure(100);
+%          %end
+%          %if nargin == 1
+%          %   fs = 28800000;
+%             colour = 'k';
+%             TITLE = '';
+%             POWER_PLOT_1MHZ = 0;
+%             PA_Power_Measured = 23;
+%          end
+         figure(figurenum);
          
          if POWER_PLOT_1MHZ
             L = length(Rx_Signal);
