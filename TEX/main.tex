@@ -269,7 +269,7 @@
 
 % *** PDF, URL AND HYPERLINK PACKAGES ***
 %
-%\usepackage{url}
+\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
 % url.sty was written by Donald Arseneau. It provides better support for
 % handling and breaking URLs. url.sty is already installed on most LaTeX
 % systems. The latest version and documentation can be obtained at:
@@ -396,6 +396,22 @@ We then conclude the paper in Section V.
 
 \section{Full-Band DPD}
 
+Most DPD is a variation of what we refer to as full-band DPD where the entire transmit band near the main carriers is linearized. 
+This can reduce the magnitude of multiple spurious emissions such as the third and fifth intermodulation products and the spectral regrowth around the main carriers. 
+However, this comes with a considerable computational complexity especially as the spacing between the carriers becomes large \cite{TMTT_SubbandDPD} which also has the negative effect of increasing power consumption and cost in the ADC.
+
+Using a previously developed DPD system \cite{Li2016GPU}, we illustrate the effect of quantization in Figure \ref{fullbandpsd}. 
+Here, we have two noncontiguous signals like what may be found in LTE-Advanced carrier aggregation. They are each 5 MHz in bandwidth. 
+They are broadcast through a fifth-order, nonlinear PA model with memory effects implemented in \textsc{Matlab}. 
+Intermodulation occurs and introduces large spurious emissions through the nearby spectrum as seen by the black curve.
+
+\begin{figure}[]
+	\centering
+	\includegraphics[]{FullBandPSD}
+	\caption{PSD output when performing full-band DPD on a scenario with two, noncontiguous, 5 MHz LTE uplink carriers with a low-precision ADC feedback path. Here, performance for the 8 bit and 6 bit ADCs are similar with about 2 dB less IM3 suppression when compared to the double-precision PA simulation.}
+	\label{fullbandpsd}
+\end{figure}
+
 \begin{figure}[]
 	\centering
 	\includegraphics[width=\columnwidth]{FullBandIndirect}
@@ -403,29 +419,11 @@ We then conclude the paper in Section V.
 	\label{block}
 \end{figure}
 
-Most DPD is a variation of what we refer to as full-band DPD where the entire transmit band near the main carriers is linearized. 
-This can reduce the magnitude of multiple spurious emissions such as the third and fifth intermodulation products and the spectral regrowth around the main carriers. 
-However, this comes with a considerable computational complexity especially as the spacing between the carriers becomes large \cite{TMTT_SubbandDPD} which also has the negative effect of increasing power consumption and cost in the ADC.
-
 A block diagram of the simulation is shown in Figure \ref{block}. Currently, all computation is done in double precision. However, at the feedback input to the DPD learning, we quantize using the fixed-point toolbox. Word lengths are varied from an unquantified sixty-four bit double all the way to two bits. When we perform the DPD algorithm where the feedback into the DPD learning block is the full, double-precision values computed by \textsc{Matlab}, we get suppression shown by the solid blue curve in Figure \ref{fullbandpsd}. We then use signed, fixed-point representation. This introduces quantization noise and degrades the performance. However, for as low as 6-bit ADC, the performance degradation is mostly insignificant. For example, there is only a 2 dB difference in suppression on the right-hand IM3 spur. The 4-bit ADC still suppress throughout the spectrum, but there is a significant performance degradation (14 dB on the right-hand IM3). 
-
-Using a previously developed DPD system \cite{Li2016GPU}, we illustrate the effect of quantization in Figure \ref{fullbandpsd}. 
-Here, we have two noncontiguous signals like what may be found in LTE-Advanced carrier aggregation. They are each 5 MHz in bandwidth. 
-They are broadcast through a fifth-order, nonlinear PA model with memory effects implemented in \textsc{Matlab}. 
-Intermodulation occurs and introduces large spurious emissions through the nearby spectrum as seen by the black curve.
 
 Here, we are limited by the available dynamic range of the low precision. 
 As we reduce the bits, the noise floor of the feedback raises due to quantization noise. 
 The ADC becomes saturated by the power of the main carriers and simply can not see the relatively low-power signals of the spurious emissions. 
-
-
-\begin{figure}[]
-\centering
-\includegraphics[]{FullBandPSD}
-\caption{PSD output when performing full-band DPD on a scenario with two, noncontiguous, 5 MHz LTE uplink carriers with a low-precision ADC feedback path. Here, performance for the 8 bit and 6 bit ADCs are similar with about 2 dB less IM3 suppression when compared to the double-precision PA simulation.}
-\label{fullbandpsd}
-\end{figure}
-
 
 \section{Sub-Band DPD}
 An alternative to the full-band DPD is what the authors refer to as sub-band DPD. 
@@ -433,8 +431,8 @@ With this method, one targets specific sub-bands such as prominent intermodulati
 This has the effect of drastically reducing sample rates which in turn reduces the running complexity of the algorithm. 
 This method also provides freedom in the sense that specific sub-bands can be targeted as needed. 
 
-Using a previously developed sub-band DPD system \cite{TMTT_SubbandDPD} we illustrate the effect of quantization in Figure \ref{subbandpsd}. Here, we simulate two noncontiguous signals like what may be found in LTE-Advanced carrier aggregation. They are each 5 MHz in bandwidth. They are broadcast through a ninth-order, nonlinear PA model implemented in \textsc{Matlab}. 
-Intermodulation occurs and introduces large spurious emissions through the nearby spectrum as seen by the black curve. We use the sub-band DPD method to target the right-hand, third-order intermodulation spurious emission.
+Using a previously developed sub-band DPD system \cite{TMTT_SubbandDPD} we illustrate the effect of quantization in Figure \ref{subbandpsd}. Similar to the full-band simulation in the previous section, we simulate two noncontiguous signals. They are each 5 MHz in bandwidth broadcast through a fifth-order PA model. 
+In the nearby spectrum, there are spurious emissions caused by intermodulation. We use the sub-band DPD method to target the right-hand, third-order intermodulation (IM3+) spurious emission.
 
 When using the sub-band method, it is not necessary to receive the main carriers in the feedback path.
 Instead, a sub-band DPD can be designed as follows. 
@@ -480,7 +478,7 @@ The DPD application is achieved by adding a term to the PA input,
 
 The complex multiplication of the error signal by the reference signal in Equation \ref{eq:NLMS_Update_memory}, can be simplified when the error signal is only 1-bit. The multiplication can be replaced with sign changes and additions to $u(n)$. This reduces the complexity which helps simplify the implementation of the learning algorithm. 
 
-Using this training algorithm, the DPD coefficients are updated iteratively. The convergence of these coefficients for the simulation in this section is shown in Figure \ref{subbandcon}. Here we show the single-bit case. We see that the third and fifth-order DPD coefficients each converge smoothly despite the low dynamic-range of the feedback path. This is because the LMS update to the coefficient shown in Eq. (1) is simply a small step. To have a smooth convergence, each step needs to only be in the correct direction. For this, the single-bit error signal, $e(n)$, needs only be correlated to the LMS reference signal $u(n).$ Although the error-signal is boxy due to the low precision, it is still correlated to the LMS signal like in the full-precision case. 
+Using this training algorithm, the DPD coefficients are updated iteratively. The convergence of these coefficients for the simulation in this section is shown in Figure \ref{subbandcon}. Here we show the single-bit case. We see that the third and fifth-order DPD coefficients each converge smoothly despite the low dynamic-range of the feedback path. This is because the LMS update to the coefficient shown in Eq. (1) is simply a small step. To have a smooth convergence, each step needs to only be in the correct direction. For this, the single-bit error signal, $e(n)$, needs only be correlated to the LMS reference signal $u(n).$ Although the error-signal is boxy due to the low precision, it is still correlated to the LMS signal similar to the full-precision case. 
 
 \begin{figure}[]
 	\centering
@@ -587,7 +585,7 @@ Using this training algorithm, the DPD coefficients are updated iteratively. The
 % \fnbelowfloat command of the stfloats package.
 
 \section{Hardware Testing}
-To test the feasibility of performing DPD with fewer bits, we used a WARPv3 software-defined radio boards \cite{warpProject}. This is a board that has a WiFi chipset and a power amplifier. We use the WARPLab framework which allows us to use \textsc{Matlab} to interface with the board. The host PC does all of the signal processing and DPD. A figure of this test setup is shown in Figure \ref{warpsetup}. Here, we transmit from one RF port and feedback to the other RF port via a directional coupler. 
+To test the feasibility of performing DPD with fewer bits, we used a WARPv3 software-defined radio board \cite{warpProject}. This is a board that has a WiFi chipset and a power amplifier. We use the WARPLab framework which allows us to use \textsc{Matlab} to interface with the board. The host PC does all of the signal processing and DPD. A figure of this test setup is shown in Figure \ref{warpsetup}. Here, we transmit from one RF port and feedback to the other RF port via a directional coupler. 
 
 We test the Subband DPD on the WARP board with varying ADC resolutions. The WARPv3 board natively has a 12 bit ADC. For our testing, we emulate a lower precision by simply quantizing the received signal in \textsc{Matlab}. Since the board only has a bandwidth of 40 MHz, we send two 1.4 MHz LTE uplink carriers discontiguously. The carriers intermodulate due to the nonlinearities in the PA. 
 
@@ -603,23 +601,23 @@ We use the same DPD processing as in Section III and account for the third and f
 \begin{figure}[]
 	\centering
 	\includegraphics{SubBandPSDWARP}
-	\caption{PSD output when performing sub-band DPD on the IM3+ spur. We use a scenario with two, noncontiguous, 1.4 MHz LTE uplink carriers with a 1-bit ADC feedback path. Here, performance for the single bit observations has about 2 dB less IM3 suppression when compared to the double-precision. }
+	\caption{PSD output when performing sub-band DPD on the IM3+ spur using WARPLab hardware. We use a scenario with two, noncontiguous, 1.4 MHz LTE uplink carriers with a 1-bit ADC feedback path. Here, performance for the single bit observations has about 2 dB less IM3 suppression when compared to the double-precision. }
 	\label{WARPPSD}
 \end{figure}
 
 \begin{figure}[]
 	\centering
 	\includegraphics{SubBandConWARP}
-	\caption{Convergence of the third and fifth-order DPD coefficients for a single-bit ADC feedback path.}
+	\caption{Convergence of the third and fifth-order DPD coefficients for a single-bit ADC feedback path in the WARPLab hardware experiments.}
 	\label{WARPCon}
 \end{figure}
 
 
 \section{Conclusion}
-Digital predistortion is a valuable method to linearize PAs that does not necessarily need to be computationally costly or require a complicated hardware overhead. 
+Digital predistortion is a valuable method to linearize PAs that does not necessarily need to be computationally costly or require complicated hardware overhead. 
 When designing a system with DPD, one consideration should be the precision of the ADC. 
 With a low-precision ADC of about four or six bits, the performance of the full-band DPD training can remain mostly intact.
-With a sub-band DPD, a single bit is sufficient for a decent suppression of a single spurious emission. This is an attractive option for linearization on handsets where power is of concern or in massive MIMO where its inefficient to perform a full resolution DPD for every transmit chain.
+With a sub-band DPD, a single bit is sufficient for a decent suppression of a single spurious emission. This is an attractive option for linearization on handsets where power is of concern or in massive MIMO where it may be inefficient to perform a full resolution DPD for every transmit chain.
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
 % adjust value as needed - may need to be readjusted if
@@ -637,7 +635,7 @@ With a sub-band DPD, a single bit is sufficient for a decent suppression of a si
 % http://www.michaelshell.org/tex/ieeetran/bibtex/
 \bibliographystyle{IEEEtran}
 % argument is your BibTeX string definitions and bibliography database(s)
-\bibliography{IEEEabrv,Ref.bib}
+\bibliography{IEEEabrv,Ref}
 %
 % <OR> manually copy in the resultant .bbl file
 % set second argument of \begin to the number of references
